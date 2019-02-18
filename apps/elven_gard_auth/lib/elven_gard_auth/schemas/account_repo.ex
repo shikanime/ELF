@@ -11,11 +11,11 @@ defmodule ElvenGardAuth.AccountRepo do
 
   ## Examples
 
-      iex> list_UserSchemas()
+      iex> list_user()
       [%UserSchema{}, ...]
 
   """
-  def list_UserSchemas do
+  def list_user do
     Repo.all(UserSchema)
   end
 
@@ -26,28 +26,28 @@ defmodule ElvenGardAuth.AccountRepo do
 
   ## Examples
 
-      iex> get_UserSchema!(123)
+      iex> get_user!(123)
       %UserSchema{}
 
-      iex> get_UserSchema!(456)
+      iex> get_user!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_UserSchema!(id), do: Repo.get!(UserSchema, id)
+  def get_user!(id), do: Repo.get!(UserSchema, id)
 
   @doc """
   Creates a UserSchema.
 
   ## Examples
 
-      iex> create_UserSchema(%{field: value})
+      iex> create_user(%{field: value})
       {:ok, %UserSchema{}}
 
-      iex> create_UserSchema(%{field: bad_value})
+      iex> create_user(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_UserSchema(attrs \\ %{}) do
+  def create_user(attrs \\ %{}) do
     %UserSchema{}
     |> UserSchema.changeset(attrs)
     |> Repo.insert()
@@ -58,14 +58,14 @@ defmodule ElvenGardAuth.AccountRepo do
 
   ## Examples
 
-      iex> update_UserSchema(UserSchema, %{field: new_value})
+      iex> update_user(UserSchema, %{field: new_value})
       {:ok, %UserSchema{}}
 
-      iex> update_UserSchema(UserSchema, %{field: bad_value})
+      iex> update_user(UserSchema, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_UserSchema(%UserSchema{} = UserSchema, attrs) do
+  def update_user(%UserSchema{} = UserSchema, attrs) do
     UserSchema
     |> UserSchema.changeset(attrs)
     |> Repo.update()
@@ -76,14 +76,14 @@ defmodule ElvenGardAuth.AccountRepo do
 
   ## Examples
 
-      iex> delete_UserSchema(UserSchema)
+      iex> delete_user(UserSchema)
       {:ok, %UserSchema{}}
 
-      iex> delete_UserSchema(UserSchema)
+      iex> delete_user(UserSchema)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_UserSchema(%UserSchema{} = UserSchema) do
+  def delete_user(%UserSchema{} = UserSchema) do
     Repo.delete(UserSchema)
   end
 
@@ -92,11 +92,11 @@ defmodule ElvenGardAuth.AccountRepo do
 
   ## Examples
 
-      iex> change_UserSchema(UserSchema)
+      iex> change_user(UserSchema)
       %Ecto.Changeset{source: %UserSchema{}}
 
   """
-  def change_UserSchema(%UserSchema{} = UserSchema) do
+  def change_user(%UserSchema{} = UserSchema) do
     UserSchema.changeset(UserSchema, %{})
   end
 end
