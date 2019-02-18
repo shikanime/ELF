@@ -1,4 +1,4 @@
-defmodule ElvenGardAuth.WorldCrypto do
+defmodule ElvenGardGate.WorldCrypto do
   use Bitwise, only_operators: true
 
   @world_chunk_table [" ", "-", ".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "n"]
