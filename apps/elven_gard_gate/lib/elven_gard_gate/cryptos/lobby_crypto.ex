@@ -1,4 +1,4 @@
-defmodule ElvenGardAuth.LobbyCrypto do
+defmodule ElvenGardGate.LobbyCrypto do
   use Bitwise, only_operators: true
 
   @doc """

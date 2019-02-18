@@ -1,8 +1,8 @@
-defmodule ElvenGardAuth.Application do
+defmodule ElvenGardGate.Application do
   use Application
 
-  alias ElvenGardAuth.LoginEndpoint
-  alias ElvenGardAuth.WorldEndpoint
+  alias ElvenGardGate.LoginEndpoint
+  alias ElvenGardGate.WorldEndpoint
 
   def start(_type, _args) do
     children = [
@@ -10,7 +10,7 @@ defmodule ElvenGardAuth.Application do
       {WorldEndpoint, []},
     ]
 
-    opts = [strategy: :one_for_one, name: ElvenGardAuth.Supervisor]
+    opts = [strategy: :one_for_one, name: ElvenGardGate.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

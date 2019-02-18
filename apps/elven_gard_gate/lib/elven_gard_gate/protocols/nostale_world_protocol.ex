@@ -1,4 +1,4 @@
-defmodule ElvenGardAuth.NostaleLoginProtocol do
+defmodule ElvenGardGate.NostaleWorldProtocol do
   @behaviour :ranch_protocol
 
   def start_link(ref, socket, transporter, _opts) do
@@ -9,21 +9,13 @@ defmodule ElvenGardAuth.NostaleLoginProtocol do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transporter.setopts(socket, active: true) do
       :gen_server.enter_loop(__MODULE__, [], %{
-        stage: :login,
         transporter: transporter
       })
     end
   end
 
-  def handle_info({:tcp, socket, req}, state = %{stage: :login}) do
-    req
-    |> ElvenGardAuth.LoginCrypto.decrypt!()
-    |> ElvenGardAuth.LoginPacket.parse!()
-    {:noreply, %{state | stage: :lobby}}
-  end
-
-  def handle_info({:tcp, socket, req}, state = %{stage: :lobby}) do
-    {:noreply, %{state | stage: :world}}
+  def handle_info({:tcp, _socket, _req}, state) do
+    {:noreply, state}
   end
 
   def handle_info({:tcp_closed, socket}, state) do

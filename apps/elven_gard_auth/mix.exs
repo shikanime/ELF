@@ -11,21 +11,23 @@ defmodule ElvenGardAuth.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
-    ]
-  end
-
-  def application do
-    [
-      extra_applications: [:logger],
-      mod: {ElvenGardAuth.Application, []}
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
   defp deps do
     [
-      {:swarm, "~> 3.0"},
-      {:ranch, "~> 1.5"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end
