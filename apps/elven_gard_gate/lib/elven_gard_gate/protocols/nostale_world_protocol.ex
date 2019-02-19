@@ -2,7 +2,7 @@ defmodule ElvenGardGate.NostaleWorldProtocol do
   @behaviour :ranch_protocol
 
   def start_link(ref, socket, transporter, _opts) do
-    {:ok, :proc_lib.spawn_link(__MODULE__, :init, ref, socket, transporter)}
+    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transporter])}
   end
 
   def init(ref, socket, transporter) do

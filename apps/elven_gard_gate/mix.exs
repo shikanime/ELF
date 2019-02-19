@@ -24,6 +24,7 @@ defmodule ElvenGardGate.MixProject do
 
   defp deps do
     [
+      {:uuid, "~> 1.1"},
       {:elven_gard_auth, in_umbrella: true},
       {:libcluster, "~> 3.0"},
       {:swarm, "~> 3.0"},
