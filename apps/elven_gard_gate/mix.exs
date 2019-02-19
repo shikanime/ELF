@@ -1,6 +1,10 @@
 defmodule ElvenGardGate.MixProject do
   use Mix.Project
 
+  def start(_type, _args) do
+    DeferredConfig.populate(:elven_gard_gate)
+  end
+
   def project do
     [
       app: :elven_gard_gate,
@@ -24,6 +28,7 @@ defmodule ElvenGardGate.MixProject do
 
   defp deps do
     [
+      {:deferred_config, "~> 0.1.0"},
       {:uuid, "~> 1.1"},
       {:elven_gard_tower, in_umbrella: true},
       {:libcluster, "~> 3.0"},
