@@ -1,10 +1,10 @@
-defmodule ElvenGardAuth.AccountRepo do
+defmodule ElvenGardTower.AccountRepo do
   @moduledoc """
   The Accounts context.
   """
 
-  alias ElvenGardAuth.Postgres
-  alias ElvenGardAuth.UserSchema
+  alias ElvenGardTower.Postgres
+  alias ElvenGardTower.UserSchema
 
   def identify_user(name, password) do
     Postgres.get_by!(UserSchema, name: name)

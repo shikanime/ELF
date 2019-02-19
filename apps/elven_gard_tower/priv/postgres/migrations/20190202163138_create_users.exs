@@ -1,4 +1,4 @@
-defmodule ElvenGardAuth.Postgres.Migrations.CreateUsers do
+defmodule ElvenGardTower.Postgres.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do

@@ -15,7 +15,7 @@ defmodule ElvenGardGate.SessionSuppervisor do
   @doc """
   Registers a new worker, and creates the worker process
   """
-  def register(worker_name) do
-    Supervisor.start_child(__MODULE__, [worker_name])
+  def register(args) do
+    Supervisor.start_child(__MODULE__, [args])
   end
 end

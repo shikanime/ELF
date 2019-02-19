@@ -4,7 +4,7 @@ defmodule ElvenGardGate.MixProject do
   def project do
     [
       app: :elven_gard_gate,
-      version: "0.1.0",
+      version: "2.0.0-beta.1",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -25,7 +25,7 @@ defmodule ElvenGardGate.MixProject do
   defp deps do
     [
       {:uuid, "~> 1.1"},
-      {:elven_gard_auth, in_umbrella: true},
+      {:elven_gard_tower, in_umbrella: true},
       {:libcluster, "~> 3.0"},
       {:swarm, "~> 3.0"},
       {:ranch, "~> 1.5"},
