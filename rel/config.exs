@@ -10,13 +10,13 @@ use Mix.Releases.Config,
 environment :dev do
   set dev_mode: true
   set include_erts: false
-  set cookie: :"BN(KZDg5;3J4y,ia4itTD/Ce@8=Nt9a(s)|5r:c1HOuSm$Jg~0Km!Kr)%lj[})>f"
+  set cookie: "nocookie"
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"rq|&n]dptRz=pWDi([E[8h.BMTV$Q^>K`3L}W{8|tYHn!*RtL;!yoF2vdT,F6_Pe"
+  set cookie: System.get_env("ERLANG_COOKIE") |> String.to_atom()
   set vm_args: "rel/vm.args"
 end
 
@@ -28,4 +28,3 @@ release :nosale do
     elven_gard_gate: :permanent
   ]
 end
-
