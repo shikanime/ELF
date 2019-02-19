@@ -1,4 +1,4 @@
-defmodule ElvenGardAuthUmbrella.MixProject do
+defmodule ElvenGardNostale.MixProject do
   use Mix.Project
 
   def project do
