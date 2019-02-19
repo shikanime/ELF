@@ -7,7 +7,7 @@ defmodule ElvenGardGate.NostaleLoginProtocol do
     LoginResponse,
     SessionCoordinator
   }
-  alias ElvenGardAuth.AccountRepo
+  alias ElvenGardTower.AccountRepo
 
   def start_link(ref, socket, transporter, _opts) do
     {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transporter])}
@@ -31,17 +31,15 @@ defmodule ElvenGardGate.NostaleLoginProtocol do
 
     case AccountRepo.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
-        with {:ok, session_id} <- SessionCoordinator.start_coordinator() do
-          state.transporter.send(
-            socket,
-            LoginResponse.render("loging_success.nsl", %{
-              user_id:        user.id,
-              session_id:     session_id,
-              server_status:  []
-            })
-          )
-          {:noreply, %{state | stage: :lobby}}
-        end
+        state.transporter.send(
+          socket,
+          LoginResponse.render("loging_success.nsl", %{
+            user_id:        user.id,
+            session_id:     "",
+            server_status:  []
+          })
+        )
+        {:noreply, %{state | stage: :lobby}}
       {:error} ->
         state.transporter.send(
           socket,
