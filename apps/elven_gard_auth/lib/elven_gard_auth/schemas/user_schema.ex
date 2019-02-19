@@ -3,7 +3,7 @@ defmodule ElvenGardAuth.UserSchema do
   import Ecto.Changeset
 
   schema "users" do
-    field :email, :string
+    field :name, :string
     field :password_hash, :string
 
     timestamps()
@@ -12,7 +12,7 @@ defmodule ElvenGardAuth.UserSchema do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :password_hash])
-    |> validate_required([:email, :password_hash])
+    |> cast(attrs, [:name, :password_hash])
+    |> validate_required([:name, :password_hash])
   end
 end

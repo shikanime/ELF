@@ -1,6 +1,6 @@
-defmodule ElvenGardGate.LoginPacket do
+defmodule ElvenGardGate.LoginRequest do
   @moduledoc """
-  First LoginPacket packet send by the client
+  First LoginRequest packet send by the client
   """
 
   defstruct user_name: "",

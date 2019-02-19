@@ -3,8 +3,11 @@ defmodule ElvenGardGate.NostaleLoginProtocol do
 
   alias ElvenGardGate.{
     LoginCrypto,
-    LoginPacket
+    LoginRequest,
+    LoginResponse,
+    SessionCoordinator
   }
+  alias ElvenGardAuth.AccountRepo
 
   def start_link(ref, socket, transporter, _opts) do
     {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transporter])}
@@ -20,11 +23,32 @@ defmodule ElvenGardGate.NostaleLoginProtocol do
     end
   end
 
-  def handle_info({:tcp, _socket, req}, state = %{stage: :login}) do
-    req
-    |> LoginCrypto.decrypt!()
-    |> LoginPacket.parse!()
-    {:noreply, %{state | stage: :lobby}}
+  def handle_info({:tcp, socket, req}, state = %{stage: :login}) do
+    packet =
+      req
+      |> LoginCrypto.decrypt!()
+      |> LoginRequest.parse!()
+
+    case AccountRepo.identify_user(packet.user_name, packet.user_password) do
+      {:ok, user} ->
+        with {:ok, session_id} <- SessionCoordinator.start_coordinator() do
+          state.transporter.send(
+            socket,
+            LoginResponse.render("loging_success.nsl", %{
+              user_id:        user.id,
+              session_id:     session_id,
+              server_status:  []
+            })
+          )
+          {:noreply, %{state | stage: :lobby}}
+        end
+      {:error} ->
+        state.transporter.send(
+          socket,
+          LoginResponse.render("bad_credential.nsl", %{})
+        )
+        {:noreply, state}
+    end
   end
 
   def handle_info({:tcp, _socket, _req}, state = %{stage: :lobby}) do

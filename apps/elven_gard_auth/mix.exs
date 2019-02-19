@@ -18,6 +18,7 @@ defmodule ElvenGardAuth.MixProject do
 
   defp deps do
     [
+      {:argon2_elixir, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"}
     ]
