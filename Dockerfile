@@ -38,9 +38,11 @@ RUN mix release --name ${APP_NAME} --verbose && \
     tar -xf _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz \
         --directory /opt/app/build
 
-FROM erlang:21-alpine
+FROM alpine:3.8
 
 WORKDIR /opt/app/src
+
+RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main openssl
 
 RUN apk update && \
     apk add --no-cache bash

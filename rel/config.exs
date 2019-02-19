@@ -14,7 +14,7 @@ environment :dev do
 end
 
 environment :prod do
-  set include_erts: false
+  set include_erts: true
   set include_src: false
   set cookie: :"rq|&n]dptRz=pWDi([E[8h.BMTV$Q^>K`3L}W{8|tYHn!*RtL;!yoF2vdT,F6_Pe"
   set vm_args: "rel/vm.args"
