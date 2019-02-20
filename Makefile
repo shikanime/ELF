@@ -20,3 +20,11 @@ krun:
 .PHONY: kdeploy
 kdeploy:
 	helm install --name elven ./deploy
+
+.PHONY: doc-gate
+doc-gate:
+	ex_doc "ElvenGardGate" "0.1.0" _build/dev/lib/elven_gard_gate --output doc/elven_gard_gate
+
+.PHONY: doc-tower
+doc-tower:
+	ex_doc "ElvenGardTower" "0.1.0" _build/dev/lib/elven_gard_tower --output doc/elven_gard_tower
