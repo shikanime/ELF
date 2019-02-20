@@ -21,10 +21,12 @@ COPY apps/elven_gard_tower/config/  ./apps/elven_gard_tower/config/
 ARG MIX_ENV=prod
 ENV MIX_ENV=${MIX_ENV}
 
-RUN mix do deps.get, deps.compile, compile
+RUN mix do deps.get, deps.compile
 
 COPY apps/elven_gard_gate/lib apps/elven_gard_gate/lib
 COPY apps/elven_gard_tower/lib apps/elven_gard_tower/lib
+
+RUN mix compile
 
 COPY rel rel
 
