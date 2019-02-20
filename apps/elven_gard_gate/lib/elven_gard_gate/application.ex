@@ -20,6 +20,9 @@ defmodule ElvenGardGate.Application do
       gossip: [
         strategy: Elixir.Cluster.Strategy.Gossip,
         config: [
-          secret: System.get_env("GOSSIP_SECRET")]]]
+          secret: Application.get_env(:libcluster, :gossip_secret, System.get_env("GOSSIP_SECRET"))
+        ]
+      ]
+    ]
   end
 end
