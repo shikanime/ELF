@@ -1,0 +1,5 @@
+replicaCount: 3
+
+gossipSecret: bm8tc2VjcmV0
+
+erlangCookie: bm8tY29va2ll

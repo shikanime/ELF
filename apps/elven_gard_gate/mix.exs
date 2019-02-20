@@ -31,9 +31,9 @@ defmodule ElvenGardGate.MixProject do
       {:deferred_config, "~> 0.1.0"},
       {:uuid, "~> 1.1"},
       {:elven_gard_tower, in_umbrella: true},
-      {:libcluster, "~> 3.0"},
       {:swarm, "~> 3.0"},
       {:ranch, "~> 1.5"},
+      {:libcluster, "~> 3.0"}
     ]
   end
 end

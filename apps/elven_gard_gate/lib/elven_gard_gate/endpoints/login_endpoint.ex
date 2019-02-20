@@ -1,19 +1,17 @@
 defmodule ElvenGardGate.LoginEndpoint do
+  @default [transporter: [port: 4123], acceptor: 10]
+
   def child_spec(opts) do
-    env = [
-      transporter: [
-        port: Application.get_env(:elven_gard_gate, :port, 4123)
-      ],
-      acceptor: Application.get_env(:elven_gard_gate, :acceptor, 10)
-    ]
+    env = Application.get_env(:elven_gard_gate, LoginEndpoint, [])
+    config = @default |> Keyword.merge(env) |> Keyword.merge(opts)
 
     :ranch.child_spec(
       ElvenGardGate.LoginEndpoint,
-      env[:acceptor],
+      config[:acceptor],
       :ranch_tcp,
-      env[:transporter] ++ Keyword.get(opts, :transporter, []),
+      config[:transporter],
       ElvenGardGate.NostaleLoginProtocol,
-      Keyword.get(opts, :protocol, [])
+      []
     )
   end
 end

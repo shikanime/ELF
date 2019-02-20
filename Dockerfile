@@ -26,35 +26,40 @@ RUN mix do deps.get, deps.compile, compile
 COPY apps/elven_gard_gate/lib apps/elven_gard_gate/lib
 COPY apps/elven_gard_tower/lib apps/elven_gard_tower/lib
 
-ARG APP_NAME
-ARG APP_VSN
-ENV APP_NAME=${APP_NAME} \
-    APP_VSN=${APP_VSN}
-
 COPY rel rel
 
-RUN mix release --name ${APP_NAME} --verbose && \
+ARG REL_ENV=prod
+ARG APP_NAME
+ARG APP_VSN
+
+RUN mix release --name ${APP_NAME} --env ${REL_ENV} --verbose && \
     mkdir /opt/app/build && \
     tar -xf _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz \
         --directory /opt/app/build
 
 FROM alpine:3.8
 
-WORKDIR /opt/app/src
-
-RUN apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main openssl
+WORKDIR /opt/app
 
 RUN apk update && \
-    apk add --no-cache bash
+    apk add --no-cache \
+        --repository http://dl-cdn.alpinelinux.org/alpine/edge/main openssl && \
+    apk add --no-cache \
+        bash
+
+ENV REPLACE_OS_VARS=true
 
 COPY --from=builder /opt/app/build .
 
-ARG APP_NAME
+EXPOSE 45892
 
-ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME}
+EXPOSE 4369
+EXPOSE 49200
 
 EXPOSE 4213
 EXPOSE 4214
 
-CMD trap 'exit' INT; /opt/app/src/bin/${APP_NAME} foreground
+ARG APP_NAME
+ENV APP_NAME=${APP_NAME}
+
+CMD /opt/app/bin/${APP_NAME} foreground

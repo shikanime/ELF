@@ -1,19 +1,17 @@
 defmodule ElvenGardGate.WorldEndpoint do
+  @default [transporter: [port: 4124], acceptor: 10]
+
   def child_spec(opts) do
-    env = [
-      transporter: [
-        port: Application.get_env(:elven_gard_gate, :port, 4124)
-      ],
-      acceptor: Application.get_env(:elven_gard_gate, :acceptor, 10)
-    ]
+    env = Application.get_env(:elven_gard_gate, WorldEndpoint, [])
+    config = @default |> Keyword.merge(env) |> Keyword.merge(opts)
 
     :ranch.child_spec(
       ElvenGardGate.WorldEndpoint,
-      env[:acceptor],
+      config[:acceptor],
       :ranch_tcp,
-      env[:transporter] ++ Keyword.get(opts, :transporter, []),
+      config[:transporter],
       ElvenGardGate.NostaleWorldProtocol,
-      Keyword.get(opts, :protocol, [])
+      []
     )
   end
 end

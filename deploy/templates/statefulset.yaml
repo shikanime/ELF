@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "elven-gard.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "elven-gard.name" . }}
+    helm.sh/chart: {{ include "elven-gard.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  serviceName: "elven-gard"
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "elven-gard.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "elven-gard.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: elven
+        image: elven_gard/nostale
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4123
+          name: tower
+        - containerPort: 4124
+          name: gate
+        - containerPort: 4369
+          name: erlang-daemon
+        - containerPort: 45892
+          name: erlang-discover
+        - containerPort: 49200
+          name: erlang-mesh
+        env:
+          - name: GOSSIP_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "elven-gard.fullname" . }}-erlang-cluster
+                key: gossip-secret
+          - name: NODE_COOKIE
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "elven-gard.fullname" . }}-erlang-cluster
+                key: erlang-cookie
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
