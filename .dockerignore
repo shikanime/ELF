@@ -1,14 +1,10 @@
 *
 
 !.formatter.exs
-!.gitignore
-!.dockerignore
 
-!Dockerfile
 !Makefile
 !mix.exs
 !mix.lock
-!*.md
 
 !apps/
 !apps/*/
@@ -19,10 +15,6 @@
 !apps/*/config/
 !apps/*/config/*/
 !apps/*/config/**/*.exs
-
-!apps/*/test/
-!apps/*/test/**/
-!apps/*/test/**/*.exs
 
 !apps/*/lib/
 !apps/*/lib/**/
@@ -40,10 +32,3 @@
 !config/
 !config/*/
 !config/*/*.exs
-
-!deploy/
-!deploy/*.yaml
-!deploy/templates/
-!deploy/templates/*.yaml
-!deploy/templates/_helpers.tpl
-!deploy/templates/NOTES.txt
