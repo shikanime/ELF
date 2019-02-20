@@ -18,7 +18,7 @@ environment :prod do
   set vm_args: "rel/vm.args"
 end
 
-release :nostale do
+release :gate do
   set version: "0.1.0"
   set applications: [
     :runtime_tools,
