@@ -40,7 +40,7 @@ defmodule ElvenGardGate.NostaleLoginProtocol do
           })
         )
         {:noreply, %{state | stage: :lobby}}
-      {:error} ->
+      {:error, _reason} ->
         state.transporter.send(
           socket,
           LoginResponse.render("bad_credential.nsl", %{})
