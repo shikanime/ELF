@@ -10,17 +10,15 @@ use Mix.Releases.Config,
 environment :dev do
   set dev_mode: true
   set include_erts: false
-  set cookie: "nocookie"
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: System.get_env("ERLANG_COOKIE") |> String.to_atom()
   set vm_args: "rel/vm.args"
 end
 
-release :nosale do
+release :nostale do
   set version: "0.1.0"
   set applications: [
     :runtime_tools,
