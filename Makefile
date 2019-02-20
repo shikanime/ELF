@@ -1,7 +1,11 @@
-all: kbuild krun
+all: image
 
-.PHONY: kbuild
-kbuild:
+.PHONY: compile
+compile:
+	mix compile
+
+.PHONY: image
+image:
 	docker build \
 		--build-arg APP_NAME=gate \
 		--build-arg APP_VSN=0.1.0 \
@@ -10,21 +14,18 @@ kbuild:
 		-t elven_gard/gate:latest \
 		.
 
-.PHONY: krun
-krun:
-	docker run \
-		--expose 4123 -p 4123:4123 \
-		--expose 4124 -p 4124:4124 \
-		--rm -it elven_gard/gate:latest
+.PHONY: deploy
+deploy:
+	helm install \
+		--name elven \
+		./deploy
 
-.PHONY: kdeploy
-kdeploy:
-	helm install --name elven ./deploy
+.PHONY: release
+release:
+	MIX_ENV=prod mix do deps.get, compile
+	MIX_ENV=prod mix release --verbose
 
-.PHONY: doc-gate
-doc-gate:
+.PHONY: doc
+doc:
 	ex_doc "ElvenGardGate" "0.1.0" _build/dev/lib/elven_gard_gate --output doc/elven_gard_gate
-
-.PHONY: doc-tower
-doc-tower:
 	ex_doc "ElvenGardTower" "0.1.0" _build/dev/lib/elven_gard_tower --output doc/elven_gard_tower
