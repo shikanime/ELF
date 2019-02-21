@@ -1,8 +1,9 @@
 FROM elixir:1.8-alpine
 
 RUN apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache \
+    apk upgrade --no-cache
+
+RUN apk add --no-cache \
         git \
         build-base
 
