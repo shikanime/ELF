@@ -1,0 +1,4 @@
+dependencies:
+  - name: stable/postgresql
+    version: "3.11.5"
+    repository: "https://charts.bitnami.com/bitnami"
