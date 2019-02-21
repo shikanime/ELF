@@ -1,3 +1,6 @@
+CI_REGISTRY_IMAGE=registry.gitlab.com/deva-hub/elf
+CI_COMMIT_REF_SLUG=master
+
 all: image
 
 .PHONY: compile
@@ -7,11 +10,27 @@ compile:
 .PHONY: image
 image:
 	docker build \
+			--pull \
+			--file build/build.Dockerfile \
+			--tag ${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-build \
+			.
+	docker build \
+		--pull \
+		--file build/base.Dockerfile \
+		--tag ${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-base \
+		.
+	docker build \
+		--pull \
+		--build-arg BUILD_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-build \
+		--file build/deps.Dockerfile \
+		--tag ${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-deps \
+		.
+	docker build \
+		--build-arg DEPS_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-deps \
+		--build-arg BASE_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-base \
 		--build-arg APP_NAME=gate \
 		--build-arg APP_VSN=0.1.0 \
-		--build-arg REL_ENV=prod \
-		-t elven_gard/gate:0.1.0 \
-		-t elven_gard/gate:latest \
+		-t ${CI_REGISTRY_IMAGE}:latest \
 		.
 
 .PHONY: deploy
