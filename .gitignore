@@ -2,6 +2,7 @@
 
 !.*
 
+!LICENSE
 !Dockerfile
 !Makefile
 !mix.exs
