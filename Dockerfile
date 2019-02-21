@@ -1,19 +1,9 @@
-ARG BUILD_IMAGE
-FROM BUILD_IMAGE AS builder
+ARG DEPS_IMAGE
+ARG BASE_IMAGE
+
+FROM ${DEPS_IMAGE} AS builder
 
 WORKDIR /opt/app/src
-
-COPY mix.* ./
-COPY config ./config
-COPY apps/elven_gard_gate/mix.exs ./apps/elven_gard_gate/
-COPY apps/elven_gard_tower/mix.exs ./apps/elven_gard_tower/
-COPY apps/elven_gard_gate/config/ ./apps/elven_gard_gate/config/
-COPY apps/elven_gard_tower/config/  ./apps/elven_gard_tower/config/
-
-ARG MIX_ENV=prod
-ENV MIX_ENV=${MIX_ENV}
-
-RUN mix do deps.get, deps.compile
 
 COPY apps/elven_gard_gate/lib apps/elven_gard_gate/lib
 COPY apps/elven_gard_tower/lib apps/elven_gard_tower/lib
@@ -31,8 +21,7 @@ RUN mix release --name ${APP_NAME} --env ${REL_ENV} --verbose && \
     tar -xf _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz \
         --directory /opt/app/build
 
-ARG RELEASE_IMAGE
-FROM RELEASE_IMAGE
+FROM ${BASE_IMAGE}
 
 WORKDIR /opt/app
 
