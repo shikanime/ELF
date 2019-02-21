@@ -3,34 +3,53 @@ image: docker:latest
 services:
   - docker:dind
 
+stages:
+  - prepare
+  - build
+  - test
+  - deploy
+
 before_script:
   - |
     echo "$CI_REGISTRY_PASSWORD" | \
       docker login \
         --username "$CI_REGISTRY_USER" \
-        --password-stdin $CI_REGISTRY
-  - |
-    docker build \
-      --pull \
-      --file build/build-base.Dockerfile \
-      --tag build-base:latest \
-      .
-  - docker push build-base:latest
-  - |
-    docker build \
-      --pull \
-      --file build/release-base.Dockerfile \
-      --tag release-base:latest \
-      .
-  - docker push release-base:latest
+        --password-stdin \
+        $CI_REGISTRY
+
+prepare-base:
+  stage: prepare
+  script:
+    - |
+      docker build \
+        --pull \
+        --file build/build.Dockerfile \
+        --tag $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-build \
+        .
+    - docker push $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-build
+    - |
+      docker build \
+        --pull \
+        --file build/base.Dockerfile \
+        --tag $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
+        .
+    - docker push $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base
+    - |
+      docker build \
+        --pull \
+        --build-arg BUILD_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-build \
+        --file build/deps.Dockerfile \
+        --tag $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps \
+        .
+    - docker push $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps
 
 build-release:
   stage: build
   script:
     - |
       docker build \
-        --build-arg BUILD_BASE_IMAGE=build-base:latest \
-        --build-arg RELEASE_BASE_IMAGE=release-base:latest \
+        --build-arg DEPS_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps \
+        --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         --build-arg APP_NAME=gate \
         --build-arg APP_VSN=0.1.0 \
         --build-arg REL_ENV=prod \
@@ -45,6 +64,8 @@ build-dev:
   script:
     - |
       docker build \
+        --build-arg DEPS_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps \
+        --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         --build-arg APP_NAME=gate \
         --build-arg APP_VSN=0.1.0 \
         --build-arg REL_ENV=prod \
