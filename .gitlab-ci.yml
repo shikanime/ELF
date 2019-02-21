@@ -6,7 +6,7 @@ services:
 before_script:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
-build-master:
+build-release:
   stage: build
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE" .
@@ -14,7 +14,7 @@ build-master:
   only:
     - master
 
-build:
+build-dev:
   stage: build
   script:
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
