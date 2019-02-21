@@ -10,7 +10,6 @@
 !apps/*/
 !apps/*/.formatter.exs
 !apps/*/mix.exs
-!apps/*/*.md
 
 !apps/*/config/
 !apps/*/config/*/
