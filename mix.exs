@@ -4,14 +4,18 @@ defmodule ElvenGardUmbrella.MixProject do
   def project do
     [
       apps_path: "apps",
-      start_permanent: Mix.env() == :prod,
-      deps: deps(),
       name: "ElvenGard",
       source_url: "https://github.com/deva-hub/ELF",
-      docs: [
-        main: "Top",
-        extras: ["README.md"]
-      ]
+      start_permanent: Mix.env() == :prod,
+      docs: docs(),
+      deps: deps()
+    ]
+  end
+
+  defp docs do
+    [
+      main: "Top",
+      extras: ["README.md"]
     ]
   end
 
