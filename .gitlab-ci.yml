@@ -4,13 +4,33 @@ services:
   - docker:dind
 
 before_script:
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  - |
+    echo "$CI_REGISTRY_PASSWORD" | \
+      docker login \
+        --username "$CI_REGISTRY_USER" \
+        --password-stdin $CI_REGISTRY
+  - |
+    docker build \
+      --pull \
+      --file build/build-base.Dockerfile \
+      --tag build-base:latest \
+      .
+  - docker push build-base:latest
+  - |
+    docker build \
+      --pull \
+      --file build/release-base.Dockerfile \
+      --tag release-base:latest \
+      .
+  - docker push release-base:latest
 
 build-release:
   stage: build
   script:
     - |
       docker build \
+        --build-arg BUILD_BASE_IMAGE=build-base:latest \
+        --build-arg RELEASE_BASE_IMAGE=release-base:latest \
         --build-arg APP_NAME=gate \
         --build-arg APP_VSN=0.1.0 \
         --build-arg REL_ENV=prod \

@@ -29,3 +29,10 @@ release:
 doc:
 	ex_doc "ElvenGardGate" "0.1.0" _build/dev/lib/elven_gard_gate --output doc/elven_gard_gate
 	ex_doc "ElvenGardTower" "0.1.0" _build/dev/lib/elven_gard_tower --output doc/elven_gard_tower
+
+.PHONY: changelog
+changelog:
+	yarn changelog \
+		--infile CHANGELOG.md \
+		--release-count 0 \
+		--same-file

@@ -31,6 +31,9 @@
 !apps/*/priv/**/
 !apps/*/priv/**/*
 
+!build/
+!build/*.Dockerfile
+
 !rel/
 !rel/vm.args
 !rel/*/
