@@ -52,7 +52,6 @@ build-release:
         --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         --build-arg APP_NAME=gate \
         --build-arg APP_VSN=0.1.0 \
-        --build-arg REL_ENV=prod \
         -t $CI_REGISTRY_IMAGE:latest \
         .
     - docker push "$CI_REGISTRY_IMAGE"
@@ -68,7 +67,6 @@ build-dev:
         --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         --build-arg APP_NAME=gate \
         --build-arg APP_VSN=0.1.0 \
-        --build-arg REL_ENV=prod \
         -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
         .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
