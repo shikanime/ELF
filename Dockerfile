@@ -1,15 +1,7 @@
-FROM elixir:1.8-alpine AS builder
+ARG BUILD_IMAGE
+FROM BUILD_IMAGE AS builder
 
 WORKDIR /opt/app/src
-
-RUN apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache \
-        git \
-        build-base
-
-RUN mix local.rebar --force && \
-    mix local.hex --force
 
 COPY mix.* ./
 COPY config ./config
@@ -39,29 +31,22 @@ RUN mix release --name ${APP_NAME} --env ${REL_ENV} --verbose && \
     tar -xf _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz \
         --directory /opt/app/build
 
-FROM alpine:3.8
+ARG RELEASE_IMAGE
+FROM RELEASE_IMAGE
 
 WORKDIR /opt/app
 
-RUN apk update && \
-    apk add --no-cache \
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/main openssl && \
-    apk add --no-cache \
-        bash
-
 ENV REPLACE_OS_VARS=true
-
-COPY --from=builder /opt/app/build .
-
 EXPOSE 45892
-
 EXPOSE 4369
 EXPOSE 49200
 
-EXPOSE 4213
-EXPOSE 4214
+COPY --from=builder /opt/app/build .
 
 ARG APP_NAME
 ENV APP_NAME=${APP_NAME}
+
+EXPOSE 4213
+EXPOSE 4214
 
 CMD /opt/app/bin/${APP_NAME} foreground
