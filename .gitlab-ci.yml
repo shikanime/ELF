@@ -9,7 +9,13 @@ before_script:
 build-release:
   stage: build
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - |
+      docker build \
+        --build-arg APP_NAME=gate \
+        --build-arg APP_VSN=0.1.0 \
+        --build-arg REL_ENV=prod \
+        -t CI_REGISTRY_IMAGE:latest \
+        .
     - docker push "$CI_REGISTRY_IMAGE"
   only:
     - master
@@ -17,7 +23,13 @@ build-release:
 build-dev:
   stage: build
   script:
-    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - |
+      docker build \
+        --build-arg APP_NAME=gate \
+        --build-arg APP_VSN=0.1.0 \
+        --build-arg REL_ENV=prod \
+        -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
+        .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
   except:
     - master
