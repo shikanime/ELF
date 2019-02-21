@@ -1,9 +1,0 @@
-*
-
-!.helmignore
-
-!*.yaml
-!templates/
-!templates/*.yaml
-!templates/NOTES.txt
-!templates/_helpers.tpl
