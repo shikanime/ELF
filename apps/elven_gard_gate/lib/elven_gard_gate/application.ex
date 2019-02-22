@@ -1,17 +1,13 @@
 defmodule ElvenGardGate.Application do
   use Application
 
-  alias ElvenGardGate.LoginEndpoint
-  alias ElvenGardGate.WorldEndpoint
-
   def start(_type, _args) do
     children = [
       {Cluster.Supervisor, [cluster_config(), [name: ElvenGardGate.ClusterSupervisor]]},
-      {LoginEndpoint, []},
-      {WorldEndpoint, []},
+      {ElvenGardGate.Endpoint, []},
     ]
 
-    opts = [strategy: :one_for_one, name: ElvenGardGate.Supervisor]
+    opts = [strategy: :one_for_one, name: ElvenGardGate.AppSupervisor]
     Supervisor.start_link(children, opts)
   end
 

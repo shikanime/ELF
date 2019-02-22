@@ -1,4 +1,4 @@
-defmodule ElvenGardGate.WorldEndpoint do
+defmodule ElvenGardGate.Endpoint.World do
   @default [transporter: [port: 4124], acceptor: 10]
 
   def child_spec(opts) do

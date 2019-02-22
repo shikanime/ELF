@@ -1,4 +1,4 @@
-defmodule ElvenGardGate.LoginEndpoint do
+defmodule ElvenGardGate.Endpoint.Authentication do
   @default [transporter: [port: 4123], acceptor: 10]
 
   def child_spec(opts) do
