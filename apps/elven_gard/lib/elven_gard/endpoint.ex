@@ -1,8 +1,5 @@
-defmodule ElvenGardGate.Endpoint do
+defmodule ElvenGard.Endpoint do
   use Supervisor
-
-  alias ElvenGardGate.AuthenticationEndpoint
-  alias ElvenGardGate.WorldEndpoint
 
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args, name: __MODULE__)
@@ -11,8 +8,8 @@ defmodule ElvenGardGate.Endpoint do
   @impl true
   def init(_args) do
     children = [
-      {AuthenticationEndpoint, []},
-      {WorldEndpoint, []},
+      {ElvenGard.Endpoint.Gate, []},
+      {ElvenGard.Endpoint.World, []},
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

@@ -1,13 +1,9 @@
-defmodule ElvenGardGate.MixProject do
+defmodule ElvenGard.MixProject do
   use Mix.Project
-
-  def start(_type, _args) do
-    DeferredConfig.populate(:elven_gard_gate)
-  end
 
   def project do
     [
-      app: :elven_gard_gate,
+      app: :elven_gard,
       version: "2.0.0-beta.1",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -22,15 +18,16 @@ defmodule ElvenGardGate.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ElvenGardGate.Application, []}
+      mod: {ElvenGard.Application, []}
     ]
   end
 
   defp deps do
     [
-      {:deferred_config, "~> 0.1.0"},
-      {:uuid, "~> 1.1"},
       {:elven_gard_tower, in_umbrella: true},
+      {:espec, "~> 1.6.3", only: :test},
+      {:mock, "~> 0.3.0", only: :test},
+      {:uuid, "~> 1.1"},
       {:swarm, "~> 3.0"},
       {:ranch, "~> 1.5"},
       {:libcluster, "~> 3.0"}

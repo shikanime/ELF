@@ -1,4 +1,4 @@
-defmodule ElvenGardGate.NostaleWorldProtocol do
+defmodule ElvenGard.NostaleWorldProtocol do
   @behaviour :ranch_protocol
 
   def start_link(ref, socket, transporter, _opts) do

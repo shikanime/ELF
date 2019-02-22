@@ -1,4 +1,4 @@
-defmodule ElvenGardGate.LoginResponse do
+defmodule ElvenGard.LoginResponse do
   def render("loging_success.nsl", %{user_id: user_id, session_id: session_id, server_status: server_status}) do
     "NsTeST #{user_id} #{session_id} #{Enum.join(server_status)}"
   end

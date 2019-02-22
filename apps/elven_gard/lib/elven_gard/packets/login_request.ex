@@ -1,4 +1,4 @@
-defmodule ElvenGardGate.LoginRequest do
+defmodule ElvenGard.LoginRequest do
   @moduledoc """
   First LoginRequest packet send by the client
   """
