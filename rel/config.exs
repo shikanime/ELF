@@ -18,11 +18,11 @@ environment :prod do
   set vm_args: "rel/vm.args"
 end
 
-release :gate do
+release :elven_gard do
   set version: "0.1.0"
   set applications: [
     :runtime_tools,
-    elven_gard_tower: :permanent,
-    elven_gard_gate: :permanent
+    elven_gard: :permanent,
+    elven_gard_tower: :permanent
   ]
 end

@@ -1,7 +1,7 @@
-defmodule ElvenGardGate.NostaleLoginProtocol do
+defmodule ElvenGard.NostaleLoginProtocol do
   @behaviour :ranch_protocol
 
-  alias ElvenGardGate.{
+  alias ElvenGard.{
     LoginCrypto,
     LoginRequest,
     LoginResponse
