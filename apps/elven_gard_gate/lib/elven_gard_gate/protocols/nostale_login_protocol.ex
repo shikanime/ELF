@@ -4,8 +4,7 @@ defmodule ElvenGardGate.NostaleLoginProtocol do
   alias ElvenGardGate.{
     LoginCrypto,
     LoginRequest,
-    LoginResponse,
-    SessionCoordinator
+    LoginResponse
   }
   alias ElvenGardTower.AccountRepo
 
