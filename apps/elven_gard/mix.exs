@@ -27,7 +27,7 @@ defmodule ElvenGard.MixProject do
 
   defp version do
     case File.read(@version_file) do
-      {:ok, binary} -> strip(binary)
+      {:ok, binary} -> String.strip(binary)
       _ -> raise "could not read the version number from VERSION"
     end
   end
@@ -42,9 +42,5 @@ defmodule ElvenGard.MixProject do
       {:ranch, "~> 1.5"},
       {:libcluster, "~> 3.0"}
     ]
-  end
-
-  defp strip(iodata) do
-    :re.replace(iodata, "^[\s\r\n\t]+|[\s\r\n\t]+$", "", [:global, return: :binary])
   end
 end
