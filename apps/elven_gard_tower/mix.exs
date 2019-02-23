@@ -1,9 +1,6 @@
 defmodule ElvenGardTower.MixProject do
   use Mix.Project
 
-  @base_dir File.cwd!()
-  @version_file Path.join(@base_dir, "VERSION")
-
   def project do
     [
       app: :elven_gard_tower,
