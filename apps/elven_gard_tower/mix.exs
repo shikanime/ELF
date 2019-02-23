@@ -21,7 +21,7 @@ defmodule ElvenGardTower.MixProject do
 
   defp version do
     case File.read(@version_file) do
-      {:ok, binary} -> String.strip(binary)
+      {:ok, binary} -> String.trim(binary)
       _ -> raise "could not read the version number from VERSION"
     end
   end
