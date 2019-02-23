@@ -7,7 +7,7 @@ defmodule ElvenGard.Application do
       {ElvenGard.Endpoint, []},
     ]
 
-    opts = [strategy: :one_for_one, name: ElvenGard.AppSupervisor]
+    opts = [strategy: :one_for_one, name: ElvenGard.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
