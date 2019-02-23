@@ -7,7 +7,7 @@ defmodule ElvenGard.MixProject do
   def project do
     [
       app: :elven_gard,
-      version: version(),
+      version: "2.0.0-beta.1",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -23,13 +23,6 @@ defmodule ElvenGard.MixProject do
       extra_applications: [:logger],
       mod: {ElvenGard.Application, []}
     ]
-  end
-
-  defp version do
-    case File.read(@version_file) do
-      {:ok, binary} -> String.trim(binary)
-      _ -> raise "could not read the version number from VERSION"
-    end
   end
 
   defp deps do
