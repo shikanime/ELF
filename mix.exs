@@ -15,7 +15,13 @@ defmodule ElvenGardUmbrella.MixProject do
   defp docs do
     [
       main: "Top",
-      extras: ["README.md"]
+      extras: ["README.md"],
+      groups_for_modules: [
+        "Packets": [
+          ElvenGard.LoginRequest,
+          ElvenGard.SessionRequest
+        ]
+      ]
     ]
   end
 
