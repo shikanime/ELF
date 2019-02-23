@@ -1,10 +1,13 @@
 defmodule ElvenGard.MixProject do
   use Mix.Project
 
+  @base_dir File.cwd!()
+  @version_file Path.join(@base_dir, "VERSION")
+
   def project do
     [
       app: :elven_gard,
-      version: "2.0.0-beta.1",
+      version: version(),
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -22,6 +25,13 @@ defmodule ElvenGard.MixProject do
     ]
   end
 
+  defp version do
+    case File.read(@version_file) do
+      {:ok, binary} -> strip(binary)
+      _ -> raise "could not read the version number from VERSION"
+    end
+  end
+
   defp deps do
     [
       {:elven_gard_tower, in_umbrella: true},
@@ -32,5 +42,9 @@ defmodule ElvenGard.MixProject do
       {:ranch, "~> 1.5"},
       {:libcluster, "~> 3.0"}
     ]
+  end
+
+  defp strip(iodata) do
+    :re.replace(iodata, "^[\s\r\n\t]+|[\s\r\n\t]+$", "", [:global, return: :binary])
   end
 end

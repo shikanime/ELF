@@ -19,7 +19,7 @@ environment :prod do
 end
 
 release :elven_gard do
-  set version: "0.1.0"
+  set version: current_version(:elven_gard)
   set applications: [
     :runtime_tools,
     elven_gard: :permanent,
