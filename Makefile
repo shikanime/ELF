@@ -28,7 +28,7 @@ image:
 	docker build \
 		--build-arg DEPS_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-deps \
 		--build-arg BASE_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-base \
-		--build-arg APP_NAME=gate \
+		--build-arg APP_NAME=elven_gard \
 		--build-arg APP_VSN=0.1.0 \
 		-t ${CI_REGISTRY_IMAGE}:latest \
 		.

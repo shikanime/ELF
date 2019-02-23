@@ -38,4 +38,4 @@ ENV APP_NAME=${APP_NAME}
 EXPOSE 4213
 EXPOSE 4214
 
-CMD /opt/app/bin/${APP_NAME} foreground
+CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
