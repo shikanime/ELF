@@ -7,6 +7,7 @@ defmodule ElvenGard.NostaleLoginProtocol do
     LoginResponse
   }
   alias ElvenGardTower.AccountRepo
+  alias ElvenGard.Endpoint.Client
 
   def start_link(ref, socket, transporter, _opts) do
     {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transporter])}
@@ -16,13 +17,14 @@ defmodule ElvenGard.NostaleLoginProtocol do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transporter.setopts(socket, active: true) do
       :gen_server.enter_loop(__MODULE__, [], %{
-        stage: :login,
-        transporter: transporter
+        client: %Client{
+          transporter: transporter
+        }
       })
     end
   end
 
-  def handle_info({:tcp, socket, req}, state = %{stage: :login}) do
+  def handle_info({:tcp, socket, req}, state) do
     packet =
       req
       |> LoginCrypto.decrypt!()
@@ -30,7 +32,8 @@ defmodule ElvenGard.NostaleLoginProtocol do
 
     case AccountRepo.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
-        state.transporter.send(
+        Client.reply(
+          state.client,
           socket,
           LoginResponse.render("loging_success.nsl", %{
             user_id:        user.id,
@@ -38,9 +41,10 @@ defmodule ElvenGard.NostaleLoginProtocol do
             server_status:  []
           })
         )
-        {:noreply, %{state | stage: :lobby}}
+        {:stop, :normal, state}
       {:error, _reason} ->
-        state.transporter.send(
+        Client.reply(
+          state.client,
           socket,
           LoginResponse.render("bad_credential.nsl", %{})
         )
@@ -48,12 +52,8 @@ defmodule ElvenGard.NostaleLoginProtocol do
     end
   end
 
-  def handle_info({:tcp, _socket, _req}, state = %{stage: :lobby}) do
-    {:noreply, %{state | stage: :world}}
-  end
-
   def handle_info({:tcp_closed, socket}, state) do
-    state.transporter.close(socket)
+    Client.close(state.client, socket)
     {:stop, :normal, state}
   end
 
