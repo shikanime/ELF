@@ -29,7 +29,7 @@ image:
 		--build-arg DEPS_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-deps \
 		--build-arg BASE_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-base \
 		--build-arg APP_NAME=elven_gard \
-		--build-arg APP_VSN=0.1.0 \
+		--build-arg APP_VSN=2.0.0-beta.1 \
 		-t ${CI_REGISTRY_IMAGE}:latest \
 		.
 
@@ -46,8 +46,8 @@ release:
 
 .PHONY: doc
 doc:
-	ex_doc "ElvenGard" "0.1.0" _build/dev/lib/elven_gard --output doc/elven_gard
-	ex_doc "ElvenGardTower" "0.1.0" _build/dev/lib/elven_gard_tower --output doc/elven_gard_tower
+	ex_doc "ElvenGard" "2.0.0-beta.1" _build/dev/lib/elven_gard --output doc/elven_gard
+	ex_doc "ElvenGardTower" "2.0.0-beta.1" _build/dev/lib/elven_gard_tower --output doc/elven_gard_tower
 
 .PHONY: changelog
 changelog:

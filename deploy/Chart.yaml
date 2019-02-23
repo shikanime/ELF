@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "1.0"
 description: Deploy nostale server
 name: elven-gard
-version: 0.1.0
+version: 2.0.0-beta.1
