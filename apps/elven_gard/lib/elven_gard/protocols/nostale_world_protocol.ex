@@ -1,6 +1,8 @@
 defmodule ElvenGard.NostaleWorldProtocol do
   @behaviour :ranch_protocol
 
+  require Logger
+
   alias ElvenGard.{
     WorldCrypto,
     SessionCrypto,
@@ -26,20 +28,32 @@ defmodule ElvenGard.NostaleWorldProtocol do
     end
   end
 
-  def handle_info({:tcp, _socket, req}, state = %{state: :await_session}) do
+  def handle_info({:tcp, _socket, req}, state = %{step: :await_session}) do
     packet =
       req
       |> SessionCrypto.decrypt!()
       |> SessionRequest.parse!()
 
+    Logger.info(fn ->
+      "New packet received: #{inspect(packet)}"
+    end)
+
+    {numeric_client_id, ""} = Integer.parse(packet.client_id)
+
     {:noreply, %{state |
-      id: packet.session_id,
+      id: numeric_client_id,
       step: :await_username
     }}
   end
 
   def handle_info({:tcp, socket, req}, state = %{step: :await_username}) do
-    case WorldCrypto.decrypt!(req, state.id, true) do
+    packet = WorldCrypto.decrypt!(req, state.id)
+
+    Logger.info(fn ->
+      "New packet received: #{inspect(packet)} with state: #{inspect(state)}"
+    end)
+
+    case packet do
       [{_last_live, username}] ->
         # TODO: replace with real auth
         # ["username", username]
