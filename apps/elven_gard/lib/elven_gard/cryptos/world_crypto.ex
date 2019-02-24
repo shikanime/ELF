@@ -1,22 +1,36 @@
 defmodule ElvenGard.WorldCrypto do
+  @moduledoc """
+  Cryptography for a Nostale login server.
+  """
+
   use Bitwise, only_operators: true
 
-  @world_chunk_table [" ", "-", ".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "n"]
+  @table [" ", "-", ".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "n"]
 
-  @doc false
-  @spec encrypt!(binary) :: binary
+  @doc """
+  Encrypt a world packet.
+
+  ## Examples
+
+  """
+  @spec encrypt!(String.t()) :: binary
   def encrypt!(packet) do
     bytes =
       packet
       |> to_charlist
       |> Enum.with_index()
 
-    length = byte_size(packet)
+    length = length(bytes)
     data = for {b, i} <- bytes, into: <<>>, do: do_encrypt(b, i, length)
     <<data::binary, 0xFF::size(8)>>
   end
 
-  @doc false
+  @doc """
+  Decrypt a world packet.
+
+  ## Examples
+
+  """
   @spec decrypt!(binary, integer, boolean) :: [binary | {integer, binary}]
   def decrypt!(binary, session_id, keepalive? \\ false) do
     session_key = session_id &&& 0xFF
@@ -37,7 +51,8 @@ defmodule ElvenGard.WorldCrypto do
       end
 
     result =
-      :binary.split(packets, <<0xFF>>, [:global, :trim_all])
+      packets
+      |> :binary.split(<<0xFF>>, [:global, :trim_all])
       |> Enum.map(&do_decrypt/1)
 
     case keepalive? do
@@ -50,6 +65,10 @@ defmodule ElvenGard.WorldCrypto do
         |> Enum.map(fn [l, r] -> {String.to_integer(l), r} end)
     end
   end
+
+  #
+  # Private functions
+  #
 
   @doc false
   @spec do_encrypt(char, integer, integer) :: binary
@@ -74,36 +93,36 @@ defmodule ElvenGard.WorldCrypto do
 
   defp do_decrypt(<<byte::size(8), rest::binary>>, result) do
     len = byte &&& 0x7F
-    {first, second} = do_decrypt_chunk(rest, len)
+    {first, second} = do_decrypt2(rest, len)
     do_decrypt(second, [first | result])
   end
 
-  @spec do_decrypt_chunk(binary, integer, binary) :: {binary, binary}
-  defp do_decrypt_chunk(bin, len, i \\ 0, result \\ "")
-  defp do_decrypt_chunk("", _, _, result), do: {result, ""}
-  defp do_decrypt_chunk(bin, len, i, result) when i >= len, do: {result, bin}
+  @spec do_decrypt2(binary, integer, binary) :: {binary, binary}
+  defp do_decrypt2(bin, len, i \\ 0, result \\ "")
+  defp do_decrypt2("", _, _, result), do: {result, ""}
+  defp do_decrypt2(bin, len, i, result) when i >= len, do: {result, bin}
 
-  defp do_decrypt_chunk(bin, len, i, result) do
+  defp do_decrypt2(bin, len, i, result) do
     <<h::size(4), l::size(4), rest::binary>> = bin
 
     res =
       cond do
         h != 0 and h != 0xF and (l == 0 or l == 0xF) ->
-          Enum.at(@world_chunk_table, h - 1)
+          Enum.at(@table, h - 1)
 
         l != 0 and l != 0xF and (h == 0 or h == 0xF) ->
-          Enum.at(@world_chunk_table, l - 1)
+          Enum.at(@table, l - 1)
 
         h != 0 and h != 0xF and l != 0 and l != 0xF ->
-          Enum.at(@world_chunk_table, h - 1) <> Enum.at(@world_chunk_table, l - 1)
+          Enum.at(@table, h - 1) <> Enum.at(@table, l - 1)
 
         true ->
           ""
       end
 
     case h != 0 and h != 0xF do
-      true -> do_decrypt_chunk(rest, len, i + 2, result <> res)
-      false -> do_decrypt_chunk(rest, len, i + 1, result <> res)
+      true -> do_decrypt2(rest, len, i + 2, result <> res)
+      false -> do_decrypt2(rest, len, i + 1, result <> res)
     end
   end
 end
