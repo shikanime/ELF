@@ -1,6 +1,6 @@
 defmodule ElvenGard.LoginResponse do
-  def render("loging_success.nsl", %{user_id: user_id, session_id: session_id, server_status: server_status}) do
-    "NsTeST #{user_id} #{session_id} #{Enum.join(server_status)}"
+  def render("loging_success.nsl", %{user_id: user_id, client_id: client_id, server_status: server_status}) do
+    "NsTeST #{user_id} #{client_id} #{Enum.join(server_status, " ")} -1:-1:-1:10000.10000.1"
   end
 
   def render("session_already_used.nsl", %{}) do
