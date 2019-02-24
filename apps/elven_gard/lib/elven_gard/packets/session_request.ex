@@ -18,7 +18,12 @@ defmodule ElvenGard.SessionRequest do
 
   defp format(payload) when length(payload) == 1 do
     %__MODULE__{
-      client_id: Enum.at(payload, 0)
+      client_id: parse_client_id(Enum.at(payload, 0))
     }
+  end
+
+  defp parse_client_id(client_id) do
+    {numeric_client_id, ""} = Integer.parse(client_id)
+    numeric_client_id
   end
 end

@@ -35,13 +35,11 @@ defmodule ElvenGard.NostaleWorldProtocol do
       |> SessionRequest.parse!()
 
     Logger.info(fn ->
-      "New packet received: #{inspect(packet)}"
+      "New session packet received: #{inspect(packet)}"
     end)
 
-    {numeric_client_id, ""} = Integer.parse(packet.client_id)
-
     {:noreply, %{state |
-      id: numeric_client_id,
+      id: packet.client_id,
       step: :await_username
     }}
   end
@@ -50,7 +48,7 @@ defmodule ElvenGard.NostaleWorldProtocol do
     packet = WorldCrypto.decrypt!(req, state.id)
 
     Logger.info(fn ->
-      "New packet received: #{inspect(packet)} with state: #{inspect(state)}"
+      "New auth packet received: #{inspect(packet)} with state: #{inspect(state)}"
     end)
 
     case packet do
