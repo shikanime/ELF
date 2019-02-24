@@ -1,7 +1,7 @@
 CI_REGISTRY_IMAGE=registry.gitlab.com/deva-hub/elf
 CI_COMMIT_REF_SLUG=master
 
-all: image
+all: image publish
 
 .PHONY: compile
 compile:
@@ -55,3 +55,7 @@ changelog:
 		--infile CHANGELOG.md \
 		--release-count 0 \
 		--same-file
+
+.PHONY: publish
+publish:
+	docker push ${CI_REGISTRY_IMAGE}:latest
