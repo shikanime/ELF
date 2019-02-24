@@ -33,8 +33,7 @@ defmodule ElvenGard.NostaleLoginProtocol do
       |> LoginRequest.parse!()
 
     Logger.info(fn ->
-      # "New packet received: #{inspect(packet)}"
-      LoginCrypto.decrypt!(req)
+      "New packet received: #{inspect(packet)}"
     end)
 
     case Account.identify_user(packet.user_name, packet.user_password) do
