@@ -1,6 +1,8 @@
 defmodule ElvenGard.NostaleLoginProtocol do
   @behaviour :ranch_protocol
 
+  require Logger
+
   alias ElvenGard.{
     LoginCrypto,
     LoginRequest,
@@ -30,6 +32,10 @@ defmodule ElvenGard.NostaleLoginProtocol do
       |> LoginCrypto.decrypt!()
       |> LoginRequest.parse!()
 
+    Logger.info(fn ->
+      "New packet received: #{inspect(packet)}"
+    end)
+
     case AccountRepo.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
         Client.reply(
@@ -37,17 +43,30 @@ defmodule ElvenGard.NostaleLoginProtocol do
           socket,
           LoginResponse.render("loging_success.nsl", %{
             user_id:        user.id,
-            session_id:     "",
-            server_status:  []
+            client_id:      packet.client_id,
+            # TODO: Remove static server IP
+            server_status:  ["192.168.1.47:4124:0:1.1.SomeTest"]
           })
+          |> LoginCrypto.encrypt!()
         )
+
+        Logger.info(fn ->
+          "#{user.name} have been connected"
+        end)
+
         {:stop, :normal, state}
-      {:error, _reason} ->
+      {:error, reason} ->
         Client.reply(
           state.client,
           socket,
           LoginResponse.render("bad_credential.nsl", %{})
+          |> LoginCrypto.encrypt!()
         )
+
+        Logger.warn(fn ->
+          "An user failed to connect: #{inspect(reason)}"
+        end)
+
         {:noreply, state}
     end
   end
