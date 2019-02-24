@@ -39,7 +39,7 @@ defmodule ElvenGard.NostaleWorldProtocol do
     end)
 
     {:noreply, %{state |
-      id: packet.client_id,
+      id: packet.session_id,
       step: :await_username
     }}
   end

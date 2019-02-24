@@ -3,27 +3,21 @@ defmodule ElvenGard.SessionRequest do
   First LoginRequest packet send by the client
   """
 
-  defstruct client_id: ""
+  defstruct session_id: ""
 
   @type t :: %__MODULE__{
-          client_id: String.t()
+          session_id: String.t()
         }
 
   @spec parse!(binary) :: t
-  def parse!(<<_::size(8), payload::binary>>) do
-    payload
-    |> String.split()
-    |> format()
-  end
-
-  defp format(payload) when length(payload) == 1 do
+  def parse!(payload) do
     %__MODULE__{
-      client_id: parse_client_id(Enum.at(payload, 0))
+      session_id: parse_session_id(payload)
     }
   end
 
-  defp parse_client_id(client_id) do
-    {numeric_client_id, ""} = Integer.parse(client_id)
-    numeric_client_id
+  defp parse_session_id(session_id) do
+    {numeric_session_id, ""} = Integer.parse(session_id)
+    numeric_session_id
   end
 end
