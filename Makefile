@@ -3,6 +3,19 @@ CI_COMMIT_REF_SLUG=master
 
 all: image publish
 
+.PHONY: run
+run:
+	docker-compose up \
+		--build \
+		--detach \
+		datastore
+	docker-compose build app
+	docker-compose run \
+		--name interactive \
+		--publish 4123:4123 \
+		--publish 4124:4124 \
+		app sh
+
 .PHONY: compile
 compile:
 	mix compile

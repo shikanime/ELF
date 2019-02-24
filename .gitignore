@@ -4,6 +4,7 @@
 
 !LICENSE
 !Dockerfile
+!docker-compose.yml
 !Makefile
 !mix.exs
 !mix.lock
