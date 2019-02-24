@@ -7,7 +7,10 @@ defmodule ElvenGard.NostaleWorldProtocol do
     WorldCrypto,
     SessionCrypto,
     SessionRequest,
-    LobbyResponse
+    UsernameRequest,
+    LobbyResponse,
+    PasswordRequest,
+    PositionResponse
   }
   alias ElvenGard.Endpoint.Client
 
@@ -45,47 +48,93 @@ defmodule ElvenGard.NostaleWorldProtocol do
   end
 
   def handle_info({:tcp, socket, req}, state = %{step: :await_username}) do
-    packet = WorldCrypto.decrypt!(req, state.id)
+    packets = WorldCrypto.decrypt!(req, state.id)
 
+    username_packet = UsernameRequest.parse!(Enum.at(packets, 0))
+    password_packet = PasswordRequest.parse!(Enum.at(packets, 1))
+
+    # TODO: handle via an event loop
     Logger.info(fn ->
-      "New auth packet received: #{inspect(packet)} with state: #{inspect(state)}"
+      "New auth packet received: #{inspect(username_packet)} with state: #{inspect(state)}"
     end)
 
-    case packet do
-      [{_last_live, username}] ->
-        # TODO: replace with real auth
-        # ["username", username]
-        {:noreply, state}
+    Logger.info(fn ->
+      "New auth packet received: #{inspect(password_packet)} with state: #{inspect(state)}"
+    end)
 
-      [{_last_live, username}, {_last_live2, password}] ->
-        # TODO: replace with real auth
-        # [["username", username], ["password", password]]
-        # TODO: replace with specific service
-        Client.reply(state.client, socket, LobbyResponse.render("list_characters.nsl", %{
-          characters: [
-            %{
-              name: "DarkyZ",
-              slot: 1,
-              gender: 1,
-              hair_style: 1,
-              hair_color: 1,
-              class: 0,
-              level: 30,
-              job_level: 10,
-              hero_level: 99,
-              equipments: "-1.-1.-1.-1.-1.-1.-1.-1",
-              pets: "-1"
-            }
-          ]
-        }))
-        {:noreply, state}
-    end
+    # TODO: handle packet id
+    new_state = state
+    |> Map.put(:username, username_packet.data.user_name)
+    |> Map.put(:password, password_packet.data.password)
+
+    responses = LobbyResponse.render("list_characters.nsl", %{
+      characters: [
+        %{
+          name: "DarkyZ",
+          slot: 1,
+          gender: 1,
+          hair_style: 1,
+          hair_color: 1,
+          class: 0,
+          level: 30,
+          job_level: 10,
+          hero_level: 99,
+          equipments: "-1.-1.-1.-1.-1.-1.-1.-1",
+          pets: "-1"
+        }
+      ]
+    })
+
+    Enum.each(responses, &(Client.reply(state.client, socket, WorldCrypto.encrypt!(&1))))
+
+    Logger.info(fn ->
+      "#{username_packet.data.user_name} have been connected with packet: #{inspect(responses)}"
+    end)
+
+    {:noreply, %{new_state |
+      step: :await_select_character
+    }}
   end
 
-  def handle_info({:tcp, _socket, req}, state = %{step: :await_password}) do
-    [{_last_live, password}] = WorldCrypto.decrypt!(req, state.id, true)
-    # TODO: replace with real auth
-    # ["password", password]
+  # def handle_info({:tcp, socket, req}, state = %{step: :await_select_character}) do
+  #   packet = WorldCrypto.decrypt!(req, state.id)
+  #   |> Enum.at(0)
+  #   |> String.split()
+
+  #   Logger.warn(fn ->
+  #     "New select packet: #{inspect(packet)}"
+  #   end)
+
+  #   if Enum.at(packet, 1) === "select" do
+  #     response = PositionResponse.render("place_character.nsw", %{
+  #       character_id: 1,
+  #       map_name: "Nosville",
+  #       position_x: 20,
+  #       position_y: 20,
+  #       music_id: 0
+  #     })
+
+  #     Client.reply(state.client, socket, WorldCrypto.encrypt!(response))
+
+  #     Logger.info(fn ->
+  #       "An user spawn with: #{inspect(response)}"
+  #     end)
+
+  #     {:noreply, %{state |
+  #       step: :await_game_command
+  #     }}
+  #   end
+
+  #   {:noreply, state}
+  # end
+
+  def handle_info({:tcp, _socket, req}, state) do
+    packet = WorldCrypto.decrypt!(req, state.id)
+
+    Logger.warn(fn ->
+      "Unimplemented packet: #{inspect(packet)}"
+    end)
+
     {:noreply, state}
   end
 
