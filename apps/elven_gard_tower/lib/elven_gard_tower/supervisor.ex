@@ -3,7 +3,7 @@ defmodule ElvenGardTower.Supervisor do
 
   def start_link(_args) do
     children = [
-      {ElvenGardTower.Postgres, []},
+      {ElvenGardTower.Datastore, []},
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one)
