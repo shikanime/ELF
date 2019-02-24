@@ -12,8 +12,14 @@ defmodule ElvenGardTower.AccountRepo do
   end
 
   def register_user(attrs \\ %{}) do
+    {password, attrs_rest} = Map.pop(attrs, :password)
+
     %UserSchema{}
-    |> UserSchema.changeset(attrs)
+    |> UserSchema.changeset(Map.put(
+      attrs_rest,
+      :password_hash,
+      Argon2.hash_pwd_salt(password)
+    ))
     |> Postgres.insert()
   end
 end
