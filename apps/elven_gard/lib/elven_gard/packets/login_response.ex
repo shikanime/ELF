@@ -24,17 +24,21 @@ defmodule ElvenGard.LoginResponse do
   end
 
   defp render_server_statuses(server_statuses) do
-    Enum.reduce(server_statuses, "", fn server_status, acc ->
-      """
-      #{acc} \
-      #{server_status.ip}:\
-      #{server_status.port}:\
-      #{render_server_charge(server_status.population)}:\
-      #{server_status.world_id}.\
-      #{server_status.channel_id}.\
-      #{server_status.name}\
-      """
-    end) <> " -1:-1:-1:10000.10000.1"
+    server_statuses
+    |> Enum.map(&(render_server_status(&1)))
+    |> Enum.concat(["-1:-1:-1:10000.10000.1"])
+    |> Enum.join(" ")
+  end
+
+  defp render_server_status(server_status) do
+    """
+    #{server_status.ip}:\
+    #{server_status.port}:\
+    #{render_server_charge(server_status.population)}:\
+    #{server_status.world_id}.\
+    #{server_status.channel_id}.\
+    #{server_status.name}\
+    """
   end
 
   defp render_server_charge(population) do
