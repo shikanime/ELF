@@ -39,7 +39,7 @@ defmodule ElvenGard.NostaleLoginProtocol do
     case Account.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
         response = LoginResponse.render("loging_success.nsl", %{
-          user_id:          user.id,
+          user_name:        user.name,
           client_id:        packet.client_id,
           # TODO: Remove static server IP
           server_statuses:  [%{
