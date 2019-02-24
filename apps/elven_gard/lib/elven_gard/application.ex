@@ -5,7 +5,6 @@ defmodule ElvenGard.Application do
     children = [
       {ElvenGard.Cluster, []},
       {ElvenGard.Endpoint, []},
-      {ElvenGardTower.Supervisor, []},
     ]
 
     opts = [strategy: :one_for_one, name: ElvenGard.Supervisor]

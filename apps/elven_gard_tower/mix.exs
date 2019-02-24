@@ -16,6 +16,13 @@ defmodule ElvenGardTower.MixProject do
     ]
   end
 
+  def application do
+    [
+      extra_applications: [:logger],
+      mod: {ElvenGardTower.Application, []}
+    ]
+  end
+
   defp deps do
     [
       {:argon2_elixir, "~> 2.0"},
@@ -27,7 +34,7 @@ defmodule ElvenGardTower.MixProject do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/datastore/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]

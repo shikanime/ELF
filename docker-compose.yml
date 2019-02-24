@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: build
+      dockerfile: build.Dockerfile
+    command: iex -S mix run
+    working_dir: /opt/app/src
+    volumes:
+      - .:/opt/app/src
+    environment:
+      - NODE_IP=127.0.0.1
+      - NODE_NAME=noname
+      - NODE_COOKIE=nocookie
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=datastore
+    ports:
+      - "4123:4123"
+      - "4124:4124"
+    depends_on:
+      - datastore
+
+  datastore:
+    image: postgres:alpine
+    environment:
+      - POSTGRES_DB=elven_gard_tower
+      - POSTGRES_USER=elven_gard_tower
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"

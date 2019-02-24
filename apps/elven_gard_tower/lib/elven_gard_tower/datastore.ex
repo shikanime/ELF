@@ -5,7 +5,7 @@ defmodule ElvenGardTower.Datastore do
 
   def init(_type, config) do
     {:ok, [
-      password: System.get_env("POSTGRES_PWD"),
+      password: System.get_env("POSTGRES_PASSWORD"),
       hostname: System.get_env("POSTGRES_HOST")
     ] ++ config}
   end
