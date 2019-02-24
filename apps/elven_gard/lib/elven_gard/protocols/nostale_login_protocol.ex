@@ -38,29 +38,31 @@ defmodule ElvenGard.NostaleLoginProtocol do
 
     case AccountRepo.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
+        response = LoginResponse.render("loging_success.nsl", %{
+          user_id:        user.id,
+          client_id:      packet.client_id,
+          # TODO: Remove static server IP
+          server_status:  ["192.168.1.47:4124:0:1.1.SomeTest"]
+        })
+
         Client.reply(
           state.client,
           socket,
-          LoginResponse.render("loging_success.nsl", %{
-            user_id:        user.id,
-            client_id:      packet.client_id,
-            # TODO: Remove static server IP
-            server_status:  ["192.168.1.47:4124:0:1.1.SomeTest"]
-          })
-          |> LoginCrypto.encrypt!()
+          LoginCrypto.encrypt!(response)
         )
 
         Logger.info(fn ->
-          "#{user.name} have been connected"
+          "#{user.name} have been connected with packet: #{response}"
         end)
 
         {:stop, :normal, state}
       {:error, reason} ->
+        response = LoginResponse.render("bad_credential.nsl", %{})
+
         Client.reply(
           state.client,
           socket,
-          LoginResponse.render("bad_credential.nsl", %{})
-          |> LoginCrypto.encrypt!()
+          LoginCrypto.encrypt!(response)
         )
 
         Logger.warn(fn ->
