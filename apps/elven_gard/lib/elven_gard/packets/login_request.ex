@@ -5,14 +5,14 @@ defmodule ElvenGard.LoginRequest do
 
   defstruct user_name: "",
             user_password: "",
-            client_id: "",
+            session_id: "",
             client_version: "",
             client_hash: ""
 
   @type t :: %__MODULE__{
           user_name: String.t(),
           user_password: String.t(),
-          client_id: String.t(),
+          session_id: String.t(),
           client_version: String.t(),
           client_hash: String.t()
         }
@@ -28,9 +28,10 @@ defmodule ElvenGard.LoginRequest do
     %__MODULE__{
       user_name: Enum.at(payload, 1),
       user_password: Enum.at(payload, 2),
-      client_id: Enum.at(payload, 0),
-      client_version: Enum.at(payload, 3),
-      client_hash: Enum.at(payload, 5)
+      # TODO: Generate session id dynamically
+      session_id: 1,
+      client_version: Enum.at(payload, 5),
+      client_hash: Enum.at(payload, 7)
     }
   end
 end

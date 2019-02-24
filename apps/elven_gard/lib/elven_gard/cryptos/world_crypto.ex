@@ -31,8 +31,8 @@ defmodule ElvenGard.WorldCrypto do
   ## Examples
 
   """
-  @spec decrypt!(binary, integer, boolean) :: [binary | {integer, binary}]
-  def decrypt!(binary, session_id, keepalive? \\ false) do
+  @spec decrypt!(binary, integer) :: [binary]
+  def decrypt!(binary, session_id) do
     session_key = session_id &&& 0xFF
     offset = session_key + 0x40 &&& 0xFF
     switch = session_id >>> 6 &&& 0x03
@@ -50,20 +50,9 @@ defmodule ElvenGard.WorldCrypto do
         <<char::size(8)>>
       end
 
-    result =
-      packets
-      |> :binary.split(<<0xFF>>, [:global, :trim_all])
-      |> Enum.map(&do_decrypt/1)
-
-    case keepalive? do
-      false ->
-        result
-
-      true ->
-        result
-        |> Stream.map(&String.split(&1, " ", parts: 2))
-        |> Enum.map(fn [l, r] -> {String.to_integer(l), r} end)
-    end
+    packets
+    |> :binary.split(<<0xFF>>, [:global, :trim_all])
+    |> Enum.map(&do_decrypt/1)
   end
 
   #

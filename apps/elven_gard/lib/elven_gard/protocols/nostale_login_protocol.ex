@@ -40,7 +40,7 @@ defmodule ElvenGard.NostaleLoginProtocol do
       {:ok, user} ->
         response = LoginResponse.render("loging_success.nsl", %{
           user_name:        user.name,
-          client_id:        packet.client_id,
+          session_id:       packet.session_id,
           # TODO: Remove static server IP
           server_statuses:  [%{
             ip: System.get_env("NODE_IP"),
@@ -51,7 +51,6 @@ defmodule ElvenGard.NostaleLoginProtocol do
             name: "Mainland"
           }]
         })
-
 
         Client.reply(
           state.client,

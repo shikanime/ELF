@@ -1,6 +1,6 @@
 defmodule ElvenGard.LoginResponse do
-  def render("loging_success.nsl", %{user_name: user_name, client_id: client_id, server_statuses: server_statuses}) do
-    "NsTeST #{user_name} #{client_id} #{render_server_statuses(server_statuses)}"
+  def render("loging_success.nsl", %{user_name: user_name, session_id: session_id, server_statuses: server_statuses}) do
+    "NsTeST #{user_name} #{session_id} #{render_server_statuses(server_statuses)}"
   end
 
   def render("session_already_used.nsl", %{}) do
