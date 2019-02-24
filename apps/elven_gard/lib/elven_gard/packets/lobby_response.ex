@@ -11,7 +11,8 @@ defmodule ElvenGard.LobbyResponse do
         #{character.equipments} #{character.job_level} \
         1 1 #{character.pets} 0
         """
-      end)
+      end),
+      "clist_end"
     ]
   end
 end
