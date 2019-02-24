@@ -9,9 +9,7 @@ defmodule ElvenGard.WorldCrypto do
 
   @doc """
   Encrypt a world packet.
-
   ## Examples
-
   """
   @spec encrypt!(String.t()) :: binary
   def encrypt!(packet) do
@@ -27,9 +25,7 @@ defmodule ElvenGard.WorldCrypto do
 
   @doc """
   Decrypt a world packet.
-
   ## Examples
-
   """
   @spec decrypt!(binary, integer) :: [binary]
   def decrypt!(binary, session_id) do
@@ -82,16 +78,16 @@ defmodule ElvenGard.WorldCrypto do
 
   defp do_decrypt(<<byte::size(8), rest::binary>>, result) do
     len = byte &&& 0x7F
-    {first, second} = do_decrypt2(rest, len)
+    {first, second} = do_decrypt_chunk(rest, len)
     do_decrypt(second, [first | result])
   end
 
-  @spec do_decrypt2(binary, integer, binary) :: {binary, binary}
-  defp do_decrypt2(bin, len, i \\ 0, result \\ "")
-  defp do_decrypt2("", _, _, result), do: {result, ""}
-  defp do_decrypt2(bin, len, i, result) when i >= len, do: {result, bin}
+  @spec do_decrypt_chunk(binary, integer, binary) :: {binary, binary}
+  defp do_decrypt_chunk(bin, len, i \\ 0, result \\ "")
+  defp do_decrypt_chunk("", _, _, result), do: {result, ""}
+  defp do_decrypt_chunk(bin, len, i, result) when i >= len, do: {result, bin}
 
-  defp do_decrypt2(bin, len, i, result) do
+  defp do_decrypt_chunk(bin, len, i, result) do
     <<h::size(4), l::size(4), rest::binary>> = bin
 
     res =
@@ -110,8 +106,8 @@ defmodule ElvenGard.WorldCrypto do
       end
 
     case h != 0 and h != 0xF do
-      true -> do_decrypt2(rest, len, i + 2, result <> res)
-      false -> do_decrypt2(rest, len, i + 1, result <> res)
+      true -> do_decrypt_chunk(rest, len, i + 2, result <> res)
+      false -> do_decrypt_chunk(rest, len, i + 1, result <> res)
     end
   end
 end
