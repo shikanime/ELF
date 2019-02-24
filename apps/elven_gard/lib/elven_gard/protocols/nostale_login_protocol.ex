@@ -33,17 +33,26 @@ defmodule ElvenGard.NostaleLoginProtocol do
       |> LoginRequest.parse!()
 
     Logger.info(fn ->
-      "New packet received: #{inspect(packet)}"
+      # "New packet received: #{inspect(packet)}"
+      LoginCrypto.decrypt!(req)
     end)
 
     case Account.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
         response = LoginResponse.render("loging_success.nsl", %{
-          user_id:        user.id,
-          client_id:      packet.client_id,
+          user_id:          user.id,
+          client_id:        packet.client_id,
           # TODO: Remove static server IP
-          server_status:  ["#{System.get_env("NODE_IP")}:4124:0:1.1.Mainland"]
+          server_statuses:  [%{
+            ip: System.get_env("NODE_IP"),
+            port: 4124,
+            population: 0,
+            world_id: 1,
+            channel_id: 1,
+            name: "Mainland"
+          }]
         })
+
 
         Client.reply(
           state.client,
