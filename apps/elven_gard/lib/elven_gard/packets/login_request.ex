@@ -24,13 +24,13 @@ defmodule ElvenGard.LoginRequest do
     |> format()
   end
 
-  defp format(payload) when length(payload) == 5 do
+  defp format(payload) when length(payload) == 8 do
     %__MODULE__{
-      user_name: payload[1],
-      user_password: decode_password(payload[2]),
-      client_id: payload[0],
-      client_version: payload[3],
-      client_hash: payload[5]
+      user_name: Enum.at(payload, 1),
+      user_password: decode_password(Enum.at(payload, 2)),
+      client_id: Enum.at(payload, 0),
+      client_version: Enum.at(payload, 3),
+      client_hash: Enum.at(payload, 5)
     }
   end
 
