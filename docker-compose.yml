@@ -10,7 +10,7 @@ services:
     volumes:
       - .:/opt/app/src
     environment:
-      - NODE_IP=127.0.0.1
+      - NODE_IP=${NODE_IP:-127.0.0.1}
       - NODE_NAME=noname
       - NODE_COOKIE=nocookie
       - POSTGRES_PASSWORD=postgres
