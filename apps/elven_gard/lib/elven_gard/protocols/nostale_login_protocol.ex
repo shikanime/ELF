@@ -8,7 +8,7 @@ defmodule ElvenGard.NostaleLoginProtocol do
     LoginRequest,
     LoginResponse
   }
-  alias ElvenGardTower.AccountRepo
+  alias ElvenGardTower.Datastore.Account
   alias ElvenGard.Endpoint.Client
 
   def start_link(ref, socket, transporter, _opts) do
@@ -36,13 +36,13 @@ defmodule ElvenGard.NostaleLoginProtocol do
       "New packet received: #{inspect(packet)}"
     end)
 
-    case AccountRepo.identify_user(packet.user_name, packet.user_password) do
+    case Account.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
         response = LoginResponse.render("loging_success.nsl", %{
           user_id:        user.id,
           client_id:      packet.client_id,
           # TODO: Remove static server IP
-          server_status:  ["192.168.1.47:4124:0:1.1.SomeTest"]
+          server_status:  ["#{System.get_env("NODE_IP")}:4124:0:1.1.Mainland"]
         })
 
         Client.reply(

@@ -27,24 +27,10 @@ defmodule ElvenGard.LoginRequest do
   defp format(payload) when length(payload) == 8 do
     %__MODULE__{
       user_name: Enum.at(payload, 1),
-      user_password: decode_password(Enum.at(payload, 2)),
+      user_password: Enum.at(payload, 2),
       client_id: Enum.at(payload, 0),
       client_version: Enum.at(payload, 3),
       client_hash: Enum.at(payload, 5)
     }
-  end
-
-  defp decode_password(password) do
-    case password |> String.length() |> rem(2) do
-      0 -> String.slice(password, 3..-1)
-      1 -> String.slice(password, 4..-1)
-    end
-    |> String.codepoints()
-    |> Stream.chunk_every(2)
-    |> Stream.map(fn [x | _] -> x end)
-    |> Stream.chunk_every(2)
-    |> Stream.map(&Enum.join/1)
-    |> Enum.map(&String.to_integer(&1, 16))
-    |> to_string
   end
 end
