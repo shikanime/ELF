@@ -23,6 +23,7 @@ release :elven_gard do
   set applications: [
     :runtime_tools,
     elven_gard: :permanent,
-    elven_gard_tower: :permanent
+    elven_gard_tower: :permanent,
+    elven_gard_stdlib: :permanent
   ]
 end
