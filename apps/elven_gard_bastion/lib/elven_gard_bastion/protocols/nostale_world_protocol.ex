@@ -14,7 +14,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
     PasswordPacket,
     CharacterSelectView,
     LoginView,
-    PositionView,
+    CharacterView,
     PasswordCrypto
   }
 
@@ -91,7 +91,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
           CharacterSelectView.render("list_characters.nsl", %{
             characters: [
               %{
-                name: "DarkyZ",
+                name: "PlayerZ",
                 slot: 1,
                 gender: 1,
                 hair_style: 1,
@@ -163,24 +163,59 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
       """
     end)
 
-    response_packet =
-      PositionView.render("place_character.nsw", %{
-        character_id: 1,
-        map_name: "Nosville",
-        position_x: 20,
-        position_y: 20,
-        music_id: 0
+    # TODO: replace placeholder
+    spawn_response_packet =
+      CharacterView.render("spawn_character.nsw", %{
+        id: 1,
+        name: "Player",
+        class: 1,
+        gender: 1,
+        hair_style: 1,
+        hair_color: 1,
+        group_id: "-1",
+        family_id: "-1",
+        family_name: "-",
+        authority: 0,
+        dignity: 16,
+        compliment: 0,
+        morph: 0,
+        invisible: false,
+        family_level: 0,
+        sp_upgrade: 0,
+        arena_winner: 0,
       })
 
     state.transporter.send(
       socket,
-      WorldCrypto.encrypt(response_packet)
+      WorldCrypto.encrypt(spawn_response_packet)
     )
 
     Logger.info(fn ->
       """
       Packet sent to #{state.address}:#{state.port} \
-      of content: #{inspect(response_packet)}\
+      of content: #{inspect(spawn_response_packet)}\
+      """
+    end)
+
+    # TODO: replace placeholder
+    move_response_packet =
+      CharacterView.render("move_character.nsw", %{
+        id: 1,
+        map_name: "Nosville",
+        position_x: :rand.uniform(6) + 76,
+        position_y: :rand.uniform(5) + 113,
+        music_id: 0
+      })
+
+    state.transporter.send(
+      socket,
+      WorldCrypto.encrypt(move_response_packet)
+    )
+
+    Logger.info(fn ->
+      """
+      Packet sent to #{state.address}:#{state.port} \
+      of content: #{inspect(move_response_packet)}\
       """
     end)
 
