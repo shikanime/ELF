@@ -13,7 +13,7 @@ services:
       - NODE_IP=${NODE_IP:-127.0.0.1}
       - NODE_NAME=noname
       - ERLANG_COOKIE=nocookie
-      - WORLD_PORT=4124
+      - ELVEN_WORLD_PORT=4124
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=datastore
     ports:

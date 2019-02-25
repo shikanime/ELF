@@ -6,10 +6,24 @@ defmodule ElvenGardBastion.Endpoint do
   end
 
   @impl true
-  def init(_args) do
+  def init(args) do
     children = [
-      {ElvenGardBastion.Endpoint.Gate, []},
-      {ElvenGardBastion.Endpoint.World, []},
+      :ranch.child_spec(
+        ElvenGardBastion.GateEndpoint,
+        10,
+        :ranch_tcp,
+        [port: 4123],
+        ElvenGardBastion.NostaleLoginProtocol,
+        []
+      ),
+      :ranch.child_spec(
+        ElvenGardBastion.WorldEndpoint,
+        10,
+        :ranch_tcp,
+        [port: 4124],
+        ElvenGardBastion.NostaleWorldProtocol,
+        []
+      ),
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

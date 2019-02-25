@@ -36,15 +36,17 @@ spec:
         - containerPort: 49200
           name: erlang-mesh
         env:
+          - name: ELVEN_WORLD_PORT
+            value: {{ default 4124 .Values.worldPort }}
           - name: GOSSIP_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ include "elven-gard.fullname" . }}-erlang-cluster
+                name: {{ include "elven-gard.fullname" . }}-cluster
                 key: gossip-secret
           - name: ERLANG_COOKIE
             valueFrom:
               secretKeyRef:
-                name: {{ include "elven-gard.fullname" . }}-erlang-cluster
+                name: {{ include "elven-gard.fullname" . }}-cluster
                 key: erlang-cookie
           - name: NODE_NAME
             valueFrom:
@@ -54,5 +56,5 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
-          - name: WORLD_PORT
-            value: {{ default 4124 .Values.worldPort }}
+          - name: DEPLOYMENT_NAME
+            value: {{ .Release.Name }}

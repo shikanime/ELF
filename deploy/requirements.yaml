@@ -1,4 +1,4 @@
 dependencies:
-  - name: stable/postgresql
-    version: "3.11.5"
-    repository: "https://charts.bitnami.com/bitnami"
+  - name: postgresql
+    version: 3.11.6
+    repository: https://kubernetes-charts.storage.googleapis.com/
