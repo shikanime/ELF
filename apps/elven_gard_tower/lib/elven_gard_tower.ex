@@ -1,2 +1,0 @@
-defmodule ElvenGardTower do
-end

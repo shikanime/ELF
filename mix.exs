@@ -4,7 +4,7 @@ defmodule ElvenGardUmbrella.MixProject do
   def project do
     [
       apps_path: "apps",
-      name: "ElvenGard",
+      name: "ElvenGardBastion",
       source_url: "https://github.com/deva-hub/ELF",
       start_permanent: Mix.env() == :prod,
       docs: docs(),
@@ -18,8 +18,8 @@ defmodule ElvenGardUmbrella.MixProject do
       extras: ["README.md"],
       groups_for_modules: [
         "Packets": [
-          ElvenGard.LoginRequest,
-          ElvenGard.SessionRequest
+          ElvenGardBastion.LoginRequest,
+          ElvenGardBastion.SessionRequest
         ]
       ]
     ]

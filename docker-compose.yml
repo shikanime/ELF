@@ -12,7 +12,8 @@ services:
     environment:
       - NODE_IP=${NODE_IP:-127.0.0.1}
       - NODE_NAME=noname
-      - NODE_COOKIE=nocookie
+      - ERLANG_COOKIE=nocookie
+      - WORLD_PORT=4124
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=datastore
     ports:
@@ -24,8 +25,8 @@ services:
   datastore:
     image: postgres:alpine
     environment:
-      - POSTGRES_DB=elven_gard_tower
-      - POSTGRES_USER=elven_gard_tower
+      - POSTGRES_DB=elven_gard_citadel
+      - POSTGRES_USER=elven_gard_citadel
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"

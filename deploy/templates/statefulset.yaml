@@ -22,13 +22,13 @@ spec:
     spec:
       containers:
       - name: elven
-        image: elven_gard/nostale
+        image: elven_gard_bastion/nostale
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 4123
-          name: tower
-        - containerPort: 4124
+        - containerPort: {{ default 4123 .Values.gatePort }}
           name: gate
+        - containerPort: {{ default 4124 .Values.worldPort }}
+          name: world
         - containerPort: 4369
           name: erlang-daemon
         - containerPort: 45892
@@ -41,7 +41,7 @@ spec:
               secretKeyRef:
                 name: {{ include "elven-gard.fullname" . }}-erlang-cluster
                 key: gossip-secret
-          - name: NODE_COOKIE
+          - name: ERLANG_COOKIE
             valueFrom:
               secretKeyRef:
                 name: {{ include "elven-gard.fullname" . }}-erlang-cluster
@@ -54,3 +54,5 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: WORLD_PORT
+            value: {{ default 4124 .Values.worldPort }}

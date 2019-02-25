@@ -6,10 +6,10 @@ WORKDIR /opt/app/src
 
 COPY mix.* ./
 COPY config ./config
-COPY apps/elven_gard/mix.exs ./apps/elven_gard/
-COPY apps/elven_gard_tower/mix.exs ./apps/elven_gard_tower/
-COPY apps/elven_gard/config/ ./apps/elven_gard/config/
-COPY apps/elven_gard_tower/config/  ./apps/elven_gard_tower/config/
+COPY apps/elven_gard_bastion/mix.exs ./apps/elven_gard_bastion/
+COPY apps/elven_gard_citadel/mix.exs ./apps/elven_gard_citadel/
+COPY apps/elven_gard_bastion/config/ ./apps/elven_gard_bastion/config/
+COPY apps/elven_gard_citadel/config/  ./apps/elven_gard_citadel/config/
 
 ARG MIX_ENV=prod
 ENV MIX_ENV=${MIX_ENV}
