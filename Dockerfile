@@ -5,8 +5,8 @@ FROM ${DEPS_IMAGE} AS builder
 
 WORKDIR /opt/app/src
 
-COPY apps/elven_gard/lib apps/elven_gard/lib
-COPY apps/elven_gard_tower/lib apps/elven_gard_tower/lib
+COPY apps/elven_gard_bastion/lib apps/elven_gard_bastion/lib
+COPY apps/elven_gard_citadel/lib apps/elven_gard_citadel/lib
 
 RUN mix compile
 

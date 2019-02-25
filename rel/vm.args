@@ -1,4 +1,4 @@
 -name ${NODE_NAME}@${NODE_IP}
--setcookie ${NODE_COOKIE}
+-setcookie ${ERLANG_COOKIE}
 -inet_dist_listen_min=49200
 -inet_dist_listen_max=49300
