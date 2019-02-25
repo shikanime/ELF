@@ -60,7 +60,7 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
             server_statuses: [
               %{
                 ip: System.get_env("NODE_IP"),
-                port: System.get_env("WORLD_PORT"),
+                port: System.get_env("ELVEN_WORLD_PORT"),
                 population: 0,
                 # TODO: move to env
                 population_limit: 200,
