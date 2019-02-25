@@ -49,6 +49,9 @@ defmodule ElvenGardStdlib.WorldCrypto do
     binarys
     |> :binary.split(<<0xFF>>, [:global, :trim_all])
     |> Enum.map(&do_decrypt/1)
+    |> Stream.map(&String.split(&1, " ", parts: 2))
+    |> Enum.map(fn [l, r] -> {String.to_integer(l), r} end)
+    |> IO.inspect()
   end
 
   #

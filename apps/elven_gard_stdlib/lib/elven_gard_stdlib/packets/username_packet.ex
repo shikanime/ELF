@@ -11,14 +11,8 @@ defmodule ElvenGardStdlib.UsernamePacket do
 
   @spec parse!(binary) :: t
   def parse!(payload) do
-    payload
-    |> String.split()
-    |> format()
-  end
-
-  defp format(payload) when length(payload) == 2 do
     %__MODULE__{
-      user_name: Enum.at(payload, 1)
+      user_name: payload
     }
   end
 end

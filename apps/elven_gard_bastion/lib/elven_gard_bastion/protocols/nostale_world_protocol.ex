@@ -29,6 +29,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
 
       :gen_server.enter_loop(__MODULE__, [], %{
         session_id: nil,
+        packet_id: nil,
         stage: :validate_session,
         transporter: transporter,
         address: address,
@@ -54,8 +55,20 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
   def handle_info({:tcp, socket, raw_packet}, state = %{stage: :validate_credential}) do
     decrypted_packets = WorldCrypto.decrypt(raw_packet, state.session_id)
 
-    username_packet = UsernamePacket.parse!(Enum.at(decrypted_packets, 0))
-    password_packet = PasswordPacket.parse!(Enum.at(decrypted_packets, 1))
+    {username_packet_id, decrypted_username_packet} = Enum.at(decrypted_packets, 0)
+    {password_packet_id, decrypted_password_packet} = Enum.at(decrypted_packets, 1)
+
+    if check_packet_sequence(username_packet_id, password_packet_id) != :ok do
+      Logger.error(fn ->
+        """
+        A packet have been lost from #{state.address}:#{state.port} \
+        from packet #{inspect(username_packet_id)} to packet #{inspect(password_packet_id)} "\
+        """
+      end)
+    end
+
+    username_packet = UsernamePacket.parse!(decrypted_username_packet)
+    password_packet = PasswordPacket.parse!(decrypted_password_packet)
 
     Logger.info(fn ->
       """
@@ -108,7 +121,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
           """
         end)
 
-        {:noreply, %{state | stage: :stash}}
+        {:noreply, %{state | stage: :stash, packet_id: password_packet_id}}
 
       {:error, reason} ->
         response_packet = LoginView.render("bad_credential.nsl", %{})
@@ -126,7 +139,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
           """
         end)
 
-        {:noreply, state}
+        {:noreply, %{state | packet_id: password_packet_id}}
     end
   end
 
@@ -194,6 +207,14 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
       :closed -> {:stop, :normal, state}
       :timeout -> {:stop, :normal, state}
       reason -> {:stop, reason, state}
+    end
+  end
+
+  def check_packet_sequence(curr_packet, inc_packet) do
+    if curr_packet + 1 == inc_packet do
+      :ok
+    else
+      {:error, :previous_packet_lost}
     end
   end
 end
