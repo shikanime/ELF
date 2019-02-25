@@ -9,6 +9,10 @@ defmodule ElvenGardBastion.Cluster do
     Supervisor.start_link(children, strategy: :one_for_one)
   end
 
+  def init(args) do
+    {:ok, args}
+  end
+
   def cluster_config do
     [
       gossip: [
