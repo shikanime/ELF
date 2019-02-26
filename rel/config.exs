@@ -18,12 +18,12 @@ environment :prod do
   set vm_args: "rel/vm.args"
 end
 
-release :elven_gard do
-  set version: current_version(:elven_gard)
+# TODO: separate citadel from bastion
+release :elven_gard_bastion do
+  set version: current_version(:elven_gard_bastion)
   set applications: [
     :runtime_tools,
-    elven_gard: :permanent,
-    elven_gard_tower: :permanent,
-    elven_gard_stdlib: :permanent
+    elven_gard_citadel: :permanent,
+    elven_gard_bastion: :permanent
   ]
 end

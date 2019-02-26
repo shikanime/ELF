@@ -7,6 +7,7 @@ WORKDIR /opt/app/src
 
 COPY apps/elven_gard_bastion/lib apps/elven_gard_bastion/lib
 COPY apps/elven_gard_citadel/lib apps/elven_gard_citadel/lib
+COPY apps/elven_gard_stdlib/lib apps/elven_gard_stdlib/lib
 
 RUN mix compile
 
