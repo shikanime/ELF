@@ -1,5 +1,6 @@
 defmodule ElvenGardBastion.NostaleLoginProtocol do
   @behaviour :ranch_protocol
+  @behaviour :gen_statem
 
   @client_hash Application.get_env(:elven_gard_bastion, :client_hash)
   @client_version Application.get_env(:elven_gard_bastion, :client_version)
@@ -20,77 +21,59 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
   }
 
   def start_link(ref, socket, transport, _opts) do
-    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transport])}
+    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [{ref, socket, transport}])}
   end
 
-  def init(ref, socket, transport) do
+  def init({ref, socket, transport}) do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transport.setopts(socket, active: true) do
       {address, port} = Network.parse_peername(socket)
 
-      :gen_statem.enter_loop(
-        __MODULE__,
-        [],
-        :login,
-        %{
-          address: address,
-          port: port,
-          connection: {socket, transport, LoginCrypto}
-        }
-      )
+      :gen_statem.enter_loop(__MODULE__, [], :connect_client, %{
+        address: address,
+        port: port,
+        connection: {socket, transport, LoginCrypto}
+      })
     end
   end
 
-  def handle_info({:tcp, _socket, packet}, :login, data) do
+  def callback_mode() do
+    :state_functions
+  end
+
+  def connect_client(:info, {:tcp, _socket, packet}, data) do
     packet = LoginCrypto.decrypt(packet)
     packet = LoginPacket.parse!(packet)
 
     if valid_client?(packet) do
       case login_user(packet) do
         {:ok, {{_session_id, client_id}, user}} ->
-          res =
-            LoginView.render("loging_success.nsl", %{
-              user_name: user.name,
-              client_id: client_id,
-              # TODO: Remove static server IP
-              server_statuses: [
-                %{
-                  ip: System.get_env("NODE_IP"),
-                  port: System.get_env("ELVEN_WORLD_PORT"),
-                  population: 0,
-                  # TODO: move to env
-                  population_limit: 200,
-                  world_id: 1,
-                  channel_id: 1,
-                  name: "Mainland"
-                }
-              ]
-            })
-          Network.reply(data.connection, res)
+          Network.send(data.connection, LoginView, "loging_success.nsl", %{
+            user_name: user.name,
+            client_id: client_id,
+            # TODO: Remove static server IP
+            server_statuses: [
+              %{
+                ip: System.get_env("NODE_IP"),
+                port: System.get_env("ELVEN_WORLD_PORT"),
+                population: 0,
+                # TODO: move to env
+                population_limit: 200,
+                world_id: 1,
+                channel_id: 1,
+                name: "Mainland"
+              }
+            ]
+          })
           {:stop, :normal, data}
 
         {:error, _reason} ->
-          res = LoginView.render("cant_login.nsl", %{})
-          Network.reply(data.connection, res)
-          {:noreply, data}
+          Network.send(data.connection, LoginView, "cant_login.nsl", %{})
+          :keep_state_data
       end
     else
-      res = LoginView.render("bad_credential.nsl", %{})
-      Network.reply(data.connection, res)
-      {:noreply, data}
-    end
-  end
-
-  def handle_info({:tcp_closed, socket}, data) do
-    data.transport.close(socket)
-    {:stop, :normal, data}
-  end
-
-  def handle_info({:tcp_error, _socket, reason}, data) do
-    case reason do
-      :closed -> {:stop, :normal, data}
-      :timeout -> {:stop, :normal, data}
-      reason -> {:stop, reason, data}
+      Network.send(data.connection, LoginView, "bad_credential.nsl", %{})
+      :keep_state_data
     end
   end
 
