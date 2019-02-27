@@ -1,18 +1,37 @@
-defmodule ElvenGardBastion.SessionWorker do
+defmodule ElvenGardBastion.SessionSocket do
   use GenServer
 
   require Logger
 
   alias ElvenGardCitadel.Datastore.Account
-  alias ElvenGardStdlib.LoginCrypto
 
-  def start_worker(name) do
+  def start_worker(id) do
+    with {:ok, pid} <-
+           Swarm.register_name(
+             id,
+             ElvenGardBastion.SessionPool,
+             :register,
+             []
+           ),
+         :ok <- Swarm.join(:bastion_sessions, pid) do
+      {:ok, pid}
+    end
+  end
+
+  def get_worker(id) do
+    case Swarm.whereis_name(id) do
+      :undefined -> {:error, :session_not_found}
+      session_pid -> {:ok, session_pid}
+    end
+  end
+
+  def get_or_start_worker(id) do
     with {:ok, pid} <-
            Swarm.whereis_or_register_name(
-             name,
+             id,
              ElvenGardBastion.SessionPool,
-             :register_worker,
-             [name]
+             :register,
+             []
            ),
          :ok <- Swarm.join(:bastion_sessions, pid) do
       {:ok, pid}
@@ -23,10 +42,8 @@ defmodule ElvenGardBastion.SessionWorker do
     GenServer.call(pid, {:process_packet, msg})
   end
 
-  def start_link() do
-    GenServer.start(__MODULE__, %{
-      crypto: LoginCrypto,
-    })
+  def start_link(args) do
+    GenServer.start_link(__MODULE__, args)
   end
 
   @impl true
@@ -43,7 +60,7 @@ defmodule ElvenGardBastion.SessionWorker do
       {:ok, user} ->
         res = %{
           user_name: user.name,
-          session_id: packet.session_id,
+          client_id: packet.client_id,
           # TODO: Remove static server IP
           server_statuses: [
             %{

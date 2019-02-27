@@ -6,8 +6,12 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
 
   require Logger
 
-  alias ElvenGardBastion.Network
   alias ElvenGardCitadel.Datastore.Account
+
+  alias ElvenGardBastion.{
+    Network,
+    SessionSocket
+  }
 
   alias ElvenGardStdlib.{
     LoginCrypto,
@@ -15,124 +19,125 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
     LoginView
   }
 
-  def start_link(ref, socket, transporter, _opts) do
-    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transporter])}
+  def start_link(ref, socket, transport, _opts) do
+    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transport])}
   end
 
-  def init(ref, socket, transporter) do
+  def init(ref, socket, transport) do
     with :ok <- :ranch.accept_ack(ref),
-         :ok <- transporter.setopts(socket, active: true) do
+         :ok <- transport.setopts(socket, active: true) do
       {address, port} = Network.parse_peername(socket)
 
-      :gen_server.enter_loop(__MODULE__, [], %{
-        transporter: transporter,
-        address: address,
-        port: port
-      })
-    end
-  end
-
-  def handle_info({:tcp, socket, raw_packet}, state) do
-    decrypted_packet = LoginCrypto.decrypt(raw_packet)
-    parsed_packet = LoginPacket.parse!(decrypted_packet)
-
-    Logger.info(fn ->
-      """
-      Login packet received from #{state.address}:#{state.port} \
-      of content: #{inspect(parsed_packet)}"\
-      """
-    end)
-
-    with :ok <- check_client_version(parsed_packet),
-         :ok <- check_client_client(parsed_packet),
-         {:ok, user} <-
-           Account.identify_user(
-             parsed_packet.user_name,
-             parsed_packet.user_password
-           ) do
-      response_packet =
-        LoginView.render(
-          "loging_success.nsl",
-          %{
-            user_name: user.name,
-            session_id: parsed_packet.session_id,
-            # TODO: Remove static server IP
-            server_statuses: [
-              %{
-                ip: System.get_env("NODE_IP"),
-                port: System.get_env("ELVEN_WORLD_PORT"),
-                population: 0,
-                # TODO: move to env
-                population_limit: 200,
-                world_id: 1,
-                channel_id: 1,
-                name: "Mainland"
-              }
-            ]
-          }
-        )
-
-      state.transporter.send(
-        socket,
-        LoginCrypto.encrypt(response_packet)
+      :gen_statem.enter_loop(
+        __MODULE__,
+        [],
+        :login,
+        %{
+          address: address,
+          port: port,
+          connection: {socket, transport, LoginCrypto}
+        }
       )
-
-      Logger.info(fn ->
-        """
-        Packet sent to #{state.address}:#{state.port} \
-        of content: #{inspect(response_packet)}\
-        """
-      end)
-
-      {:stop, :normal, state}
-    else
-      {:error, reason} ->
-        response_packet = LoginView.render("bad_credential.nsl", %{})
-
-        state.transporter.send(
-          socket,
-          LoginCrypto.encrypt(response_packet)
-        )
-
-        Logger.warn(fn ->
-          """
-          Error raised from #{state.address}:#{state.port} \
-          of content: #{inspect(reason)}\
-          """
-        end)
-
-        {:noreply, state}
     end
   end
 
-  def handle_info({:tcp_closed, socket}, state) do
-    state.transporter.close(socket)
-    {:stop, :normal, state}
+  def handle_info({:tcp, _socket, packet}, :login, data) do
+    packet = LoginCrypto.decrypt(packet)
+    packet = LoginPacket.parse!(packet)
+
+    if valid_client?(packet) do
+      case login_user(packet) do
+        {:ok, {{_session_id, client_id}, user}} ->
+          res =
+            LoginView.render("loging_success.nsl", %{
+              user_name: user.name,
+              client_id: client_id,
+              # TODO: Remove static server IP
+              server_statuses: [
+                %{
+                  ip: System.get_env("NODE_IP"),
+                  port: System.get_env("ELVEN_WORLD_PORT"),
+                  population: 0,
+                  # TODO: move to env
+                  population_limit: 200,
+                  world_id: 1,
+                  channel_id: 1,
+                  name: "Mainland"
+                }
+              ]
+            })
+          Network.reply(data.connection, res)
+          {:stop, :normal, data}
+
+        {:error, _reason} ->
+          res = LoginView.render("cant_login.nsl", %{})
+          Network.reply(data.connection, res)
+          {:noreply, data}
+      end
+    else
+      res = LoginView.render("bad_credential.nsl", %{})
+      Network.reply(data.connection, res)
+      {:noreply, data}
+    end
   end
 
-  def handle_info({:tcp_error, _socket, reason}, state) do
+  def handle_info({:tcp_closed, socket}, data) do
+    data.transport.close(socket)
+    {:stop, :normal, data}
+  end
+
+  def handle_info({:tcp_error, _socket, reason}, data) do
     case reason do
-      :closed -> {:stop, :normal, state}
-      :timeout -> {:stop, :normal, state}
-      reason -> {:stop, reason, state}
+      :closed -> {:stop, :normal, data}
+      :timeout -> {:stop, :normal, data}
+      reason -> {:stop, reason, data}
     end
   end
 
-  defp check_client_version(packet) do
-    if packet.client_version == @client_version do
-      :ok
-    else
-      {:error, :client_outdated}
+  defp valid_client?(packet) do
+    valid_client_version?(packet) and valid_client_hash?(packet)
+  end
+
+  defp valid_client_version?(packet) do
+    packet.client_version == @client_version
+  end
+
+  defp valid_client_hash?(packet) do
+    expected_hash =
+      :crypto.hash(:md5, @client_hash <> packet.user_name)
+      |> Base.encode16()
+
+    expected_hash == packet.client_hash
+  end
+
+  def generate_identity() do
+    client_id = :random.uniform(2_147_483_647)
+    session_id = UUID.uuid5(nil, client_id |> to_string())
+
+    case Swarm.whereis_name(session_id) do
+      :undefined ->
+        {client_id, session_id}
+
+      _ ->
+        generate_identity()
     end
   end
 
-  defp check_client_client(packet) do
-    expected_hash = :crypto.hash(:md5, @client_hash <> packet.user_name) |> Base.encode16()
-    |> IO.inspect
-    if expected_hash == packet.client_hash do
-      :ok
-    else
-      {:error, :client_outdated}
+  def login_user(packet) do
+    with {:ok, user} <- Account.identify_user(packet.user_name, packet.user_password) do
+      identity = generate_identity()
+      notify_user(identity)
+      {:ok, {identity, user}}
+    end
+  end
+
+  def notify_user({_, session_id}) do
+    case SessionSocket.start_worker(session_id) do
+      {:ok, _session_id} ->
+        :ok
+
+      {:error, _reason} = error ->
+        error
     end
   end
 end

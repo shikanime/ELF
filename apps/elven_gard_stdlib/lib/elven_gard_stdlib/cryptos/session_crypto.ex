@@ -2,7 +2,7 @@ defmodule ElvenGardStdlib.SessionCrypto do
   use Bitwise, only_operators: true
 
   @doc """
-  Decrypt the first binary who contains the session_id.
+  Decrypt the first binary who contains the client_id.
   """
   @spec decrypt(binary) :: String.t()
   def decrypt(<<_::size(8), payload::binary>>) do
