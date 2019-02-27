@@ -3,7 +3,7 @@ defmodule ElvenGardBastion.SessionSocket do
 
   require Logger
 
-  alias ElvenGardCitadel.Datastore.Account
+  alias ElvenGardBastion.AccountRepo
 
   def start_worker(id) do
     with {:ok, pid} <-
@@ -56,7 +56,7 @@ defmodule ElvenGardBastion.SessionSocket do
     packet = state.crypto.decrypt(req)
     packet = GenServer.call({:process, state.protocol_pid}, packet)
 
-    case Account.identify_user(packet.user_name, packet.user_password) do
+    case AccountRepo.identify_user(packet.user_name, packet.user_password) do
       {:ok, user} ->
         res = %{
           user_name: user.name,

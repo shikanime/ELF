@@ -1,4 +1,4 @@
-defmodule ElvenGardBastion.Network do
+defmodule ElvenGardBastion.NetworkHelpers do
   def parse_peername(socket) do
     {:ok, {addr, port}} = :inet.peername(socket)
 

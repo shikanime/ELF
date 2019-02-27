@@ -25,7 +25,9 @@ defmodule ElvenGardBastion.MixProject do
   defp deps do
     [
       {:elven_gard_stdlib, in_umbrella: true},
-      {:elven_gard_citadel, in_umbrella: true},
+      {:argon2_elixir, "~> 2.0"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"},
       {:espec, "~> 1.6.3", only: :test},
       {:mock, "~> 0.3.0", only: :test},
       {:uuid, "~> 1.1"},

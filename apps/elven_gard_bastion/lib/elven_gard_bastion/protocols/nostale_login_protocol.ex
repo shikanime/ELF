@@ -7,10 +7,9 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
 
   require Logger
 
-  alias ElvenGardCitadel.Datastore.Account
-
   alias ElvenGardBastion.{
-    Network,
+    AccountRepo,
+    NetworkHelpers,
     SessionSocket
   }
 
@@ -27,7 +26,7 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
   def init({ref, socket, transport}) do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transport.setopts(socket, active: true) do
-      {address, port} = Network.parse_peername(socket)
+      {address, port} = NetworkHelpers.parse_peername(socket)
 
       :gen_statem.enter_loop(__MODULE__, [], :connect_client, %{
         address: address,
@@ -48,7 +47,7 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
     if valid_client?(packet) do
       case login_user(packet) do
         {:ok, {{_session_id, client_id}, user}} ->
-          Network.send(data.connection, LoginView, "loging_success.nsl", %{
+          NetworkHelpers.send(data.connection, LoginView, "loging_success.nsl", %{
             user_name: user.name,
             client_id: client_id,
             # TODO: Remove static server IP
@@ -68,11 +67,11 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
           {:stop, :normal, data}
 
         {:error, _reason} ->
-          Network.send(data.connection, LoginView, "cant_login.nsl", %{})
+          NetworkHelpers.send(data.connection, LoginView, "cant_login.nsl", %{})
           :keep_state_data
       end
     else
-      Network.send(data.connection, LoginView, "bad_credential.nsl", %{})
+      NetworkHelpers.send(data.connection, LoginView, "bad_credential.nsl", %{})
       :keep_state_data
     end
   end
@@ -107,7 +106,7 @@ defmodule ElvenGardBastion.NostaleLoginProtocol do
   end
 
   def login_user(packet) do
-    with {:ok, user} <- Account.identify_user(packet.user_name, packet.user_password) do
+    with {:ok, user} <- AccountRepo.identify_user(packet.user_name, packet.user_password) do
       identity = generate_identity()
       notify_user(identity)
       {:ok, {identity, user}}

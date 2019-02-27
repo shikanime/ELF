@@ -3,8 +3,10 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
 
   require Logger
 
-  alias ElvenGardCitadel.Datastore.Account
-  alias ElvenGardBastion.Network
+  alias ElvenGardBastion.{
+    AccountRepo,
+    NetworkHelpers
+  }
 
   alias ElvenGardStdlib.{
     SessionCrypto,
@@ -25,7 +27,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
   def init({ref, socket, transport}) do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transport.setopts(socket, active: true) do
-      {address, port} = Network.parse_peername(socket)
+      {address, port} = NetworkHelpers.parse_peername(socket)
 
       :gen_statem.enter_loop(__MODULE__, [], :connect_client, %{
         session_id: nil,
@@ -74,9 +76,9 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
     username_packet = UsernamePacket.parse!(username_packet)
     password_packet = PasswordPacket.parse!(password_packet)
 
-    case Account.identify_user(username_packet.user_name, PasswordCrypto.encrypt(password_packet.user_password)) do
+    case AccountRepo.identify_user(username_packet.user_name, PasswordCrypto.encrypt(password_packet.user_password)) do
       {:ok, _user} ->
-        Network.send(
+        NetworkHelpers.send(
           data.connection,
           CharacterSelectView,
           "list_characters.nsl", %{
@@ -108,7 +110,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
         {:next_state, :ignore_stash, %{data | packet_id: password_packet_id}}
 
       {:error, reason} ->
-        Network.send(data.connection, LoginView, "bad_credential.nsl", %{})
+        NetworkHelpers.send(data.connection, LoginView, "bad_credential.nsl", %{})
 
         Logger.warn(fn ->
           """
@@ -142,7 +144,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
     end)
 
     # TODO: replace placeholder
-    Network.send(data.connection, CharacterView, "spawn_character.nsw", %{
+    NetworkHelpers.send(data.connection, CharacterView, "spawn_character.nsw", %{
       id: 1,
       name: "Player",
       class: 1,
@@ -162,7 +164,7 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
       arena_winner: 0,
     })
 
-    Network.send(data.connection, CharacterView, "move_character.nsw", %{
+    NetworkHelpers.send(data.connection, CharacterView, "move_character.nsw", %{
       id: 1,
       map_name: "Nosville",
       position_x: :rand.uniform(6) + 76,

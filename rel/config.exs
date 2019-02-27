@@ -23,7 +23,6 @@ release :elven_gard_bastion do
   set version: current_version(:elven_gard_bastion)
   set applications: [
     :runtime_tools,
-    elven_gard_citadel: :permanent,
     elven_gard_bastion: :permanent
   ]
 end
