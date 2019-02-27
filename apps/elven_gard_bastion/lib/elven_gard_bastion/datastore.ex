@@ -1,6 +1,6 @@
-defmodule ElvenGardCitadel.Datastore do
+defmodule ElvenGardBastion.Datastore do
   use Ecto.Repo,
-    otp_app: :elven_gard_citadel,
+    otp_app: :elven_gard_bastion,
     adapter: Ecto.Adapters.Postgres
 
   def init(_type, config) do

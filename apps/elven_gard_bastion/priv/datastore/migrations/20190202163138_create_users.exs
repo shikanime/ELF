@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.Datastore.Migrations.CreateUsers do
+defmodule ElvenGardBastion..Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do

@@ -61,7 +61,6 @@ release:
 .PHONY: doc
 doc:
 	ex_doc "ElvenGardBastion" "2.0.0-beta.1" _build/dev/lib/elven_gard_bastion --output doc/elven_gard_bastion
-	ex_doc "ElvenGardCitadel" "2.0.0-beta.1" _build/dev/lib/elven_gard_citadel --output doc/elven_gard_citadel
 
 .PHONY: changelog
 changelog:

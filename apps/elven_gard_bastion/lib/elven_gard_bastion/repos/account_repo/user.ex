@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.Datastore.Account.User do
+defmodule ElvenGardBastion.AccountRepo.User do
   use Ecto.Schema
   import Ecto.Changeset
 

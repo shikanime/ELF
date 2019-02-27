@@ -1,12 +1,13 @@
-defmodule ElvenGardCitadel.Datastore.Account do
+defmodule ElvenGardBastion.AccountRepo do
   @moduledoc """
   The Accounts context.
   """
 
   require Logger
 
-  alias ElvenGardCitadel.Datastore
-  alias ElvenGardCitadel.Datastore.Account.User
+  alias ElvenGardBastion
+  alias ElvenGardBastion.Datastore
+  alias ElvenGardBastion.AccountRepo.User
 
   def identify_user(name, password) do
     case Datastore.get_by!(User, name: name)

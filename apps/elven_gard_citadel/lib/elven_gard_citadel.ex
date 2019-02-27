@@ -1,2 +1,0 @@
-defmodule ElvenGardCitadel do
-end
