@@ -9,4 +9,9 @@ defmodule ElvenGardBastion.Network do
 
     {address, port}
   end
+
+  def reply({socket, transport, crypto}, packet) do
+    transport.send(socket, packet)
+    :ok
+  end
 end

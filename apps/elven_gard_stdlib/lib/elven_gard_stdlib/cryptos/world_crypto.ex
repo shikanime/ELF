@@ -28,10 +28,10 @@ defmodule ElvenGardStdlib.WorldCrypto do
   ## Examples
   """
   @spec decrypt(binary, integer) :: [binary]
-  def decrypt(binary, session_id) do
-    session_key = session_id &&& 0xFF
+  def decrypt(binary, client_id) do
+    session_key = client_id &&& 0xFF
     offset = session_key + 0x40 &&& 0xFF
-    switch = session_id >>> 6 &&& 0x03
+    switch = client_id >>> 6 &&& 0x03
 
     binarys =
       for <<c <- binary>>, into: <<>> do
@@ -51,7 +51,6 @@ defmodule ElvenGardStdlib.WorldCrypto do
     |> Enum.map(&do_decrypt/1)
     |> Stream.map(&String.split(&1, " ", parts: 2))
     |> Enum.map(fn [l, r] -> {String.to_integer(l), r} end)
-    |> IO.inspect()
   end
 
   #

@@ -1,15 +1,21 @@
-defmodule ElvenGardStdlib.AuthentificationProtocol do
+defmodule ElvenGardBastion.AuthentificationProtocol do
   use GenStateMachine
 
   alias ElvenGardStdlib.{
     ClientAuthPacket,
-    CharacterSelectView,
-    WorldCrypto,
-    SessionCrypto,
     PasswordPacket,
     UsernamePacket,
+    LoginPacket
+  }
+
+  alias ElvenGardStdlib.{
+    WorldCrypto,
+    SessionCrypto,
     LoginCrypto,
-    LoginPacket,
+  }
+
+  alias ElvenGardStdlib.{
+    CharacterSelectView,
     LoginView
   }
 
@@ -18,7 +24,7 @@ defmodule ElvenGardStdlib.AuthentificationProtocol do
       __MODULE__,
       {:session,
        %{
-         session_id: nil,
+         client_id: nil,
          user_name: nil,
          user_password: nil
        }}
@@ -84,7 +90,7 @@ defmodule ElvenGardStdlib.AuthentificationProtocol do
     {
       :next_state,
       :credential,
-      %{data | session_id: parsed_packet.session_id},
+      %{data | client_id: parsed_packet.client_id},
       [{:reply, from, parsed_packet}]
     }
   end
@@ -92,7 +98,7 @@ defmodule ElvenGardStdlib.AuthentificationProtocol do
   def handle_event({:call, from}, {:decrypt_packet, packet}, :credential, data) do
     {
       :keep_state_and_data,
-      [{:reply, from, WorldCrypto.decrypt(packet, data.session_id)}]
+      [{:reply, from, WorldCrypto.decrypt(packet, data.client_id)}]
     }
   end
 

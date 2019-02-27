@@ -10,7 +10,7 @@ defmodule ElvenGardBastion.SessionPool do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def register(_) do
-    DynamicSupervisor.start_child(__MODULE__, {ElvenGardBastion.SessionWorker, []})
+  def register() do
+    DynamicSupervisor.start_child(__MODULE__, {ElvenGardBastion.SessionSocket, []})
   end
 end

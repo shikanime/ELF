@@ -1,12 +1,12 @@
 defmodule ElvenGardBastion.Endpoint do
   use Supervisor
 
-  def start_link(args) do
-    Supervisor.start_link(__MODULE__, args, name: __MODULE__)
+  def start_link(init_args) do
+    Supervisor.start_link(__MODULE__, init_args, name: __MODULE__)
   end
 
   @impl true
-  def init(args) do
+  def init(_args) do
     children = [
       :ranch.child_spec(
         ElvenGardBastion.GateEndpoint,
