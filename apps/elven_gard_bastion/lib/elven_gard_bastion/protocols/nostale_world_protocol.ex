@@ -19,10 +19,10 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
   }
 
   def start_link(ref, socket, transport, _opts) do
-    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [ref, socket, transport])}
+    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [{ref, socket, transport}])}
   end
 
-  def init(ref, socket, transport) do
+  def init({ref, socket, transport}) do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transport.setopts(socket, active: true) do
       {address, port} = Network.parse_peername(socket)
@@ -170,10 +170,10 @@ defmodule ElvenGardBastion.NostaleWorldProtocol do
       music_id: 0
     })
 
-    {:next_state, :game, data}
+    {:next_state, :in_world, data}
   end
 
-  def game(:info, {:tcp, _socket, packet}, data) do
+  def in_world(:info, {:tcp, _socket, packet}, data) do
     packet = WorldCrypto.decrypt(packet, data.client_id)
 
     Logger.warn(fn ->
