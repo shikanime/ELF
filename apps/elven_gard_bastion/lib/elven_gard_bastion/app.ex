@@ -15,7 +15,7 @@ defmodule ElvenGardBastion.Application do
       {Cluster.Supervisor, [topologies, [name: ElvenGardBastion.ClusterSupervisor]]},
       {ElvenGardBastion.Endpoint, []},
       {ElvenGardBastion.Swarm, []},
-      {ElvenGardBastion.Datastore, []},
+      {ElvenGardBastion.Postgres, []},
     ]
 
     opts = [strategy: :one_for_one, name: ElvenGardBastion.AppSupervisor]

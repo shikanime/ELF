@@ -1,10 +1,10 @@
-defmodule ElvenGardBastion.MixProject do
+defmodule ElvenGard.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :elven_gard_bastion,
-      version: "2.0.0-beta.1",
+      app: :elven_gard,
+      version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -24,15 +24,11 @@ defmodule ElvenGardBastion.MixProject do
 
   defp deps do
     [
-      {:argon2_elixir, "~> 2.0"},
-      {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
       {:espec, "~> 1.6.3", only: :test},
       {:mock, "~> 0.3.0", only: :test},
       {:uuid, "~> 1.1"},
-      {:swarm, "~> 3.0"},
-      {:ranch, "~> 1.5"},
-      {:libcluster, "~> 3.0"}
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"}
     ]
   end
 end

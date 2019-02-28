@@ -13,7 +13,7 @@ defmodule ElvenGardBastion.Endpoint do
         10,
         :ranch_tcp,
         [port: 4123],
-        ElvenGardBastion.NostaleLoginProtocol,
+        ElvenGardBastion.LoginProtocol,
         []
       ),
       :ranch.child_spec(
@@ -21,7 +21,7 @@ defmodule ElvenGardBastion.Endpoint do
         10,
         :ranch_tcp,
         [port: 4124],
-        ElvenGardBastion.NostaleWorldProtocol,
+        ElvenGardBastion.WorldProtocol,
         []
       ),
     ]

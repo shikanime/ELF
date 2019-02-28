@@ -1,2 +1,0 @@
-defmodule ElvenGardStdlib do
-end

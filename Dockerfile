@@ -6,7 +6,7 @@ FROM ${DEPS_IMAGE} AS builder
 WORKDIR /opt/app/src
 
 COPY apps/elven_gard_bastion/lib apps/elven_gard_bastion/lib
-COPY apps/elven_gard_stdlib/lib apps/elven_gard_stdlib/lib
+COPY apps/elven_gard/lib apps/elven_gard/lib
 
 RUN mix compile
 
