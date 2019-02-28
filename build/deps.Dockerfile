@@ -8,10 +8,10 @@ COPY mix.* ./
 COPY config ./config
 
 COPY apps/elven_gard_bastion/mix.exs ./apps/elven_gard_bastion/
-COPY apps/elven_gard_stdlib/mix.exs ./apps/elven_gard_stdlib/
+COPY apps/elven_gard/mix.exs ./apps/elven_gard/
 
 COPY apps/elven_gard_bastion/config/ ./apps/elven_gard_bastion/config/
-COPY apps/elven_gard_stdlib/config/  ./apps/elven_gard_stdlib/config/
+COPY apps/elven_gard/config/  ./apps/elven_gard/config/
 
 ARG MIX_ENV=prod
 ENV MIX_ENV=${MIX_ENV}
