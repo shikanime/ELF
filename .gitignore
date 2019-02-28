@@ -1,7 +1,13 @@
 *
 
-!.*
+!.formatter.exs
+!.gitlab-ci.yml
+!.gitignore
+!.editorconfig
+!.dockerignore
 
+!CODE_OF_CONDUCT.md
+!CONTRIBUTING.md
 !LICENSE
 !Dockerfile
 !docker-compose.yml
