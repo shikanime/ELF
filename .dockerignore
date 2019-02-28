@@ -1,14 +1,11 @@
 *
 
-!.formatter.exs
-
 !Makefile
 !mix.exs
 !mix.lock
 
 !apps/
 !apps/*/
-!apps/*/.formatter.exs
 !apps/*/mix.exs
 
 !apps/*/config/
