@@ -8,10 +8,10 @@ defmodule ElvenGard.PasswordCrypto do
         1 -> String.slice(binary, 4..-1)
     end
     |> String.codepoints()
-    |> Stream.chunk_every(2)
-    |> Stream.map(fn [x | _] -> x end)
-    |> Stream.chunk_every(2)
-    |> Stream.map(&Enum.join/1)
+    |> Enum.chunk_every(2)
+    |> Enum.map(fn [x | _] -> x end)
+    |> Enum.chunk_every(2)
+    |> Enum.map(&Enum.join/1)
     |> Enum.map(&String.to_integer(&1, 16))
     |> to_string
   end
