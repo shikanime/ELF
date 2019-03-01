@@ -18,6 +18,6 @@ defmodule ElvenGard.PasswordCrypto do
 
   @spec encrypt(String.t()) :: binary
   def encrypt(binary) do
-    :crypto.hash(:sha512, binary) |> Base.encode16(case: :lower) |> String.upcase
+    :crypto.hash(:sha512, binary) |> Base.encode16()
   end
 end
