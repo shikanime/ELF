@@ -1,11 +1,11 @@
-defmodule ElvenGardBastion.Endpoint do
+defmodule ElvenGardCitadel.Endpoint do
   def child_spec(_opts) do
     :ranch.child_spec(
       __MODULE__,
       10,
       :ranch_tcp,
-      [port: 4123],
-      ElvenGardBastion.Protocol,
+      [port: 4124],
+      ElvenGardCitadel.Protocol,
       []
     )
   end

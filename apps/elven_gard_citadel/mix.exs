@@ -1,10 +1,10 @@
-defmodule ElvenGardBastion.MixProject do
+defmodule ElvenGardCitadel.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :elven_gard_bastion,
-      version: "2.0.0-beta.1",
+      app: :elven_gard_citadel,
+      version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -18,7 +18,7 @@ defmodule ElvenGardBastion.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ElvenGardBastion.Application, []}
+      mod: {ElvenGardCitadel.Application, []}
     ]
   end
 

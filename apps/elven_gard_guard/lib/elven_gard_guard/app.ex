@@ -1,4 +1,4 @@
-defmodule ElvenGardBastion.Application do
+defmodule ElvenGardGuard.Application do
   use Application
 
   def start(_type, _args) do
@@ -12,11 +12,12 @@ defmodule ElvenGardBastion.Application do
     ]
 
     children = [
-      {Cluster.Supervisor, [topologies, [name: ElvenGardBastion.Cluster.Supervisor]]},
-      {ElvenGardBastion.Endpoint, []},
+      {Cluster.Supervisor, [topologies, [name: ElvenGardGuard.Cluster.Supervisor]]},
+      {ElvenGardGuard.Postgres, []},
+      {ElvenGardGuard.Swarm, []},
     ]
 
-    opts = [strategy: :one_for_one, name: ElvenGardBastion.Supervisor]
+    opts = [strategy: :one_for_one, name: ElvenGardGuard.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
