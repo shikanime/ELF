@@ -1,4 +1,4 @@
-defmodule ElvenGardBastion.Application do
+defmodule ElvenGardCitadel.Application do
   use Application
 
   def start(_type, _args) do
@@ -12,11 +12,11 @@ defmodule ElvenGardBastion.Application do
     ]
 
     children = [
-      {Cluster.Supervisor, [topologies, [name: ElvenGardBastion.Cluster.Supervisor]]},
-      {ElvenGardBastion.Endpoint, []},
+      {Cluster.Supervisor, [topologies, [name: ElvenGardCitadel.Cluster.Supervisor]]},
+      {ElvenGardCitadel.Endpoint, []},
     ]
 
-    opts = [strategy: :one_for_one, name: ElvenGardBastion.Supervisor]
+    opts = [strategy: :one_for_one, name: ElvenGardCitadel.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

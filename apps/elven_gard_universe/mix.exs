@@ -1,10 +1,10 @@
-defmodule ElvenGardBastion.MixProject do
+defmodule ElvenGardUniverse.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :elven_gard_bastion,
-      version: "2.0.0-beta.1",
+      app: :elven_gard_universe,
+      version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -18,16 +18,18 @@ defmodule ElvenGardBastion.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {ElvenGardBastion.Application, []}
+      mod: {ElvenGardUniverse.Application, []}
     ]
   end
 
   defp deps do
     [
-      {:gen_state_machine, "~> 2.0"},
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"},
       {:espec, "~> 1.6.3", only: :test},
       {:mock, "~> 0.3.0", only: :test},
-      {:ranch, "~> 1.5"},
+      {:uuid, "~> 1.1"},
+      {:swarm, "~> 3.0"},
       {:libcluster, "~> 3.0"}
     ]
   end

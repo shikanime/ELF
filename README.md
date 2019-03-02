@@ -1,3 +1,3 @@
-# ElvenGardBastion
+# ElvenGard
 
 **TODO: Add description**

@@ -5,15 +5,14 @@ FROM ${DEPS_IMAGE} AS builder
 
 WORKDIR /opt/app/src
 
-COPY apps/elven_gard_bastion/lib apps/elven_gard_bastion/lib
-COPY apps/elven_gard/lib apps/elven_gard/lib
+ARG APP_NAME
+COPY apps apps
 
 RUN mix compile
 
 COPY rel rel
 
 ARG REL_ENV=prod
-ARG APP_NAME
 ARG APP_VSN
 
 RUN mix release --name ${APP_NAME} --env ${REL_ENV} --verbose && \

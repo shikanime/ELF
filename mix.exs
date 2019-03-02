@@ -1,27 +1,13 @@
-defmodule ElvenGardUmbrella.MixProject do
+defmodule ElvenGard.MixProject do
   use Mix.Project
 
   def project do
     [
       apps_path: "apps",
-      name: "ElvenGardBastion",
+      name: "ElvenGard",
       source_url: "https://github.com/deva-hub/ELF",
       start_permanent: Mix.env() == :prod,
-      docs: docs(),
       deps: deps()
-    ]
-  end
-
-  defp docs do
-    [
-      main: "Top",
-      extras: ["README.md"],
-      groups_for_modules: [
-        "Packets": [
-          ElvenGardBastion.LoginRequest,
-          ElvenGardBastion.SessionRequest
-        ]
-      ]
     ]
   end
 
