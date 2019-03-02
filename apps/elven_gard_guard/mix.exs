@@ -4,7 +4,7 @@ defmodule ElvenGardGuard.MixProject do
   def project do
     [
       app: :elven_gard_guard,
-      version: "0.1.0",
+      version: "2.0.0-beta.2",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",

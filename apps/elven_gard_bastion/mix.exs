@@ -4,7 +4,7 @@ defmodule ElvenGardBastion.MixProject do
   def project do
     [
       app: :elven_gard_bastion,
-      version: "2.0.0-beta.1",
+      version: "2.0.0-beta.2",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -24,11 +24,12 @@ defmodule ElvenGardBastion.MixProject do
 
   defp deps do
     [
-      {:gen_state_machine, "~> 2.0"},
+      {:elven_gard_guard, in_umbrella: true}, # TODO: Dicouple services
       {:espec, "~> 1.6.3", only: :test},
       {:mock, "~> 0.3.0", only: :test},
-      {:ranch, "~> 1.5"},
-      {:libcluster, "~> 3.0"}
+      {:libcluster, "~> 3.0"},
+      {:gen_state_machine, "~> 2.0"},
+      {:ranch, "~> 1.5"}
     ]
   end
 end
