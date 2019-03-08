@@ -15,8 +15,8 @@ defmodule ElvenGardUniverse.Application do
 
     children = [
       {Cluster.Supervisor, [topologies, [name: ElvenGardUniverse.Cluster.Supervisor]]},
-      {ElvenGardGuard.Postgres, []},
-      {ElvenGardGuard.Swarm, []},
+      {ElvenGardUniverse.Postgres, []},
+      {ElvenGardUniverse.Swarm, []},
     ]
 
     opts = [strategy: :one_for_one, name: ElvenGardUniverse.Supervisor]

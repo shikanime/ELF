@@ -7,9 +7,9 @@ defmodule ElvenGardGuard.SessionSocket do
     with {:ok, pid} <-
            Swarm.register_name(
              id,
-             ElvenGardGuard.SessionPool,
+             ElvenGardGuard.Swarm,
              :register,
-             []
+             [ElvenGardGuard.SessionSocket]
            ),
          :ok <- Swarm.join(:bastion_sessions, pid) do
       :ok
@@ -27,7 +27,7 @@ defmodule ElvenGardGuard.SessionSocket do
     with {:ok, pid} <-
            Swarm.whereis_or_register_name(
              id,
-             ElvenGardGuard.SessionPool,
+             ElvenGardGuard.Swarm,
              :register,
              []
            ),

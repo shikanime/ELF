@@ -10,7 +10,7 @@ defmodule ElvenGardGuard.Swarm do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def register() do
-    DynamicSupervisor.start_child(__MODULE__, {ElvenGardGuard.SessionSocket, []})
+  def register(m) do
+    DynamicSupervisor.start_child(__MODULE__, {m, []})
   end
 end
