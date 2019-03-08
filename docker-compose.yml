@@ -1,32 +1,10 @@
 version: '3'
 
 services:
-  app:
-    build:
-      context: build
-      dockerfile: build.Dockerfile
-    command: iex -S mix run
-    working_dir: /opt/app/src
-    volumes:
-      - .:/opt/app/src
-    environment:
-      - NODE_IP=${NODE_IP:-127.0.0.1}
-      - NODE_NAME=noname
-      - ERLANG_COOKIE=nocookie
-      - ELVEN_WORLD_PORT=4124
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_HOST=bastion-datastore
-    ports:
-      - "4123:4123"
-      - "4124:4124"
-    depends_on:
-      - datastore
-
-  bastion-datastore:
+  postgres:
     image: postgres:alpine
     environment:
-      - POSTGRES_DB=elven_gard_bastion
-      - POSTGRES_USER=elven_gard_bastion
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"

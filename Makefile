@@ -8,14 +8,7 @@ run:
 	docker-compose up \
 		--build \
 		--detach \
-		datastore
-	docker-compose build app
-	docker-compose run \
-		--rm \
-		--name elf_interactive \
-		--publish 4123:4123 \
-		--publish 4124:4124 \
-		app sh
+		postgres
 
 .PHONY: compile
 compile:
