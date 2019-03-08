@@ -36,7 +36,7 @@ spec:
         - containerPort: 49200
           name: erlang-mesh
         env:
-          - name: ELVEN_WORLD_PORT
+          - name: ELVEN_GARD_CITADEL
             value: {{ default 4124 .Values.worldPort }}
           - name: GOSSIP_SECRET
             valueFrom:
