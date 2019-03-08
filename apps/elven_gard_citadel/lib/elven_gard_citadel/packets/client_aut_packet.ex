@@ -1,6 +1,6 @@
 defmodule ElvenGardCitadel.ClientAuthPacket do
   @moduledoc """
-  First SignInRequest packet send by the client
+  First SignInRequest packet.reply by the client
   """
 
   defstruct client_id: "",

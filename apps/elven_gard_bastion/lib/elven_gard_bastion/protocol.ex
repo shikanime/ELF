@@ -14,7 +14,6 @@ defmodule ElvenGardBastion.Protocol do
   }
 
   alias ElvenGardBastion.{
-    Utils,
     SignInCrypto,
     SignInPacket,
     AuthentificationView
@@ -22,35 +21,34 @@ defmodule ElvenGardBastion.Protocol do
 
   @impl true
   def start_link(ref, socket, transport, _opts) do
-    {:ok, :proc_lib.spawn_link(__MODULE__, :init, [{ref, socket, transport}])}
+    args = [{ref, socket, transport}]
+    {:ok, :proc_lib.spawn_link(__MODULE__, :init, args)}
   end
 
   @impl true
   def init({ref, socket, transport}) do
     with :ok <- :ranch.accept_ack(ref),
          :ok <- transport.setopts(socket, active: true) do
-      {address, port} = Utils.parse_peername(socket)
-
-      :gen_statem.enter_loop(__MODULE__, [], :connect_client, %{
-        address: address,
-        port: port,
-        connection: {socket, transport, SignInCrypto}
+      conn =  {socket, transport}
+      :gen_statem.enter_loop(__MODULE__, [], :connect, %{
+        crypto: SignInCrypto,
+        conn: conn
       })
     end
   end
 
   @impl true
-  def handle_event(:info, {:tcp, _socket, packet}, :connect_client, data) do
-    packet = SignInCrypto.decrypt(packet)
-    packet = SignInPacket.parse(packet)
+  def handle_event(:info, {:tcp, _socket, packet}, :connect, data) do
+    decrypted_packet = SignInCrypto.decrypt(packet)
+    sign_in_packet = SignInPacket.parse(decrypted_packet)
 
-    case handle_packet(packet) do
+    case handle_packet(sign_in_packet) do
       {:ok, params} ->
-        Utils.send(data.connection, AuthentificationView, :sign_in, params)
+        reply(data.conn, data.crypto, AuthentificationView, :sign_in, params)
         {:stop, :normal, data}
 
       {:error, reason} ->
-        Utils.send(data.connection, AuthentificationView, reason, %{})
+        reply(data.conn, data.crypto, AuthentificationView, reason, %{})
         {:stop, reason}
     end
   end
@@ -65,7 +63,6 @@ defmodule ElvenGardBastion.Protocol do
         client_id: client_id,
         worlds: worlds
       }
-
       {:ok, res}
     end
   end
@@ -125,8 +122,8 @@ defmodule ElvenGardBastion.Protocol do
       %{
         # TODO: Remove static server IP
         ip: System.get_env("NODE_IP"),
-        port: System.get_env("ELVEN_WORLD_PORT"),
-        population: 0,
+        port: System.get_env("ELVEN_GARD_CITADEL"),
+        population_number: 0,
         # TODO: move to env
         population_limit: 200,
         world_id: 1,
@@ -134,7 +131,26 @@ defmodule ElvenGardBastion.Protocol do
         name: "Mainland"
       }
     ]
-
     {:ok, res}
+  end
+
+  def reply(conn, crypto, view, name, packet) do
+    res_packets = view.render(name, packet)
+
+    if is_list(res_packets) do
+      Enum.each(res_packets, &(reply(conn, crypto, &1)))
+    else
+      reply(conn, crypto, res_packets)
+    end
+
+    :ok
+  end
+
+  defp reply({socket, transport}, crypto, packet) do
+    encrypted_packet = crypto.encrypt(packet)
+    transport.send(socket, encrypted_packet)
+    Logger.info(fn ->
+      "packet sent: #{packet}"
+    end)
   end
 end

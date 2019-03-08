@@ -11,7 +11,8 @@ defmodule ElvenGardGuard.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      aliases: aliases()
     ]
   end
 
@@ -32,6 +33,14 @@ defmodule ElvenGardGuard.MixProject do
       {:uuid, "~> 1.1"},
       {:swarm, "~> 3.0"},
       {:libcluster, "~> 3.0"}
+    ]
+  end
+
+  defp aliases do
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/postgres/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

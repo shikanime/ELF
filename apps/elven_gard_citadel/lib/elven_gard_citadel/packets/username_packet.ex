@@ -1,6 +1,6 @@
 defmodule ElvenGardCitadel.UsernamePacket do
   @moduledoc """
-  First UsernameRequest packet send by the client
+  First UsernameRequest packet.reply by the client
   """
 
   defstruct user_name: nil

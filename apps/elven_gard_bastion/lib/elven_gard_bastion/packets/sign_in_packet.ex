@@ -1,6 +1,6 @@
 defmodule ElvenGardBastion.SignInPacket do
   @moduledoc """
-  First SignInRequest packet send by the client
+  First SignInRequest packet.reply by the client
   """
 
   defstruct user_name: nil,

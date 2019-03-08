@@ -1,6 +1,6 @@
 defmodule ElvenGardCitadel.PasswordPacket do
   @moduledoc """
-  First PasswordRequest packet send by the client
+  First PasswordRequest packet.reply by the client
   """
 
   defstruct user_password_hash: nil
