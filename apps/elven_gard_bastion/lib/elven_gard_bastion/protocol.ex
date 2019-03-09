@@ -42,7 +42,7 @@ defmodule ElvenGardBastion.Protocol do
     decrypted_packet = SignInCrypto.decrypt(packet)
     sign_in_packet = SignInPacket.parse(decrypted_packet)
 
-    case handle_packet(:connect, sign_in_packet) do
+    case connect_user(sign_in_packet) do
       {:ok, params} ->
         reply(data.conn, data.crypto, AuthentificationView, :sign_in, params)
         {:stop, :normal, data}
@@ -53,17 +53,16 @@ defmodule ElvenGardBastion.Protocol do
     end
   end
 
-  def handle_packet(:connect, packet) do
+  def connect_user(packet) do
     with :ok              <- validate_client(packet),
          {:ok, user}      <- authenticate_user(packet),
          {:ok, client_id} <- claim_slot(),
          {:ok, worlds}    <- list_worlds() do
-      res = %{
+      {:ok, %{
         user_name: user.name,
         client_id: client_id,
         worlds: worlds
-      }
-      {:ok, res}
+      }}
     end
   end
 
@@ -121,7 +120,7 @@ defmodule ElvenGardBastion.Protocol do
   end
 
   def list_worlds() do
-    worlds = Swarm.multi_call(:universe_worlds, :get_statuses)
+    worlds = Swarm.multi_call(:universe_worlds, :get_status)
     |> Enum.map(&(format_world(&1)))
     {:ok, worlds}
   end

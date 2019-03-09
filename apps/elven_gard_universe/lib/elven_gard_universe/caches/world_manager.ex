@@ -51,7 +51,7 @@ defmodule ElvenGardUniverse.WorldManager do
   end
 
   @impl true
-  def handle_call(:get_statuses, _from, state) do
+  def handle_call(:get_status, _from, state) do
     # TODO: calculate dynamically :population_number
     res = state
     |> Map.put(:population_number, 0)

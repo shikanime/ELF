@@ -16,7 +16,7 @@ defmodule ElvenGardLib.LobbyView do
   defp render_hero(hero) do
     """
     clist #{hero.slot} \
-    #{hero.name} \
+    #{Recase.to_snake(hero.name)} \
     0 \
     #{hero.gender} \
     #{hero.hair_style} \

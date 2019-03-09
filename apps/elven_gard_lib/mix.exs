@@ -23,6 +23,7 @@ defmodule ElvenGardLib.MixProject do
 
   defp deps do
     [
+      {:recase, "~> 0.4"},
     ]
   end
 end

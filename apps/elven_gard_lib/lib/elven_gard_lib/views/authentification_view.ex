@@ -2,51 +2,22 @@ defmodule ElvenGardLib.AuthentificationView do
   def render(:sign_in, params) do
     """
     NsTeST \
-    #{params.user_name} \
+    #{Recase.to_snake(params.user_name)} \
     #{params.client_id} \
     #{render_worlds(params.worlds)}\
     """
   end
 
-  def render(:outdated_client, _params) do
-    "failc 1"
-  end
-
-  def render(:error, _params) do
-    "failc 2"
-  end
-
-  def render(:maintenance, _params) do
-    "failc 3"
-  end
-
-  def render(:session_already_used, _params) do
-    "failc 4"
-  end
-
-  def render(:unvalid_credential, _params) do
-    "failc 5"
-  end
-
-  def render(:cant_login, _params) do
-    "failc 6"
-  end
-
-  def render(:user_blacklisted, _params) do
-    "failc 7"
-  end
-
-  def render(:country_blacklisted, _params) do
-    "failc 8"
-  end
-
-  def render(:check_case, _params) do
-    "failc 9"
-  end
-
-  def render(_type, _params) do
-    "failc 10"
-  end
+  def render(:outdated_client, _params), do: "failc 1"
+  def render(:error, _params), do: "failc 2"
+  def render(:maintenance, _params), do: "failc 3"
+  def render(:session_already_used, _params), do: "failc 4"
+  def render(:unvalid_credential, _params), do: "failc 5"
+  def render(:cant_login, _params), do: "failc 6"
+  def render(:user_blacklisted, _params), do: "failc 7"
+  def render(:country_blacklisted, _params), do: "failc 8"
+  def render(:check_case, _params), do: "failc 9"
+  def render(_type, _params), do: "failc 10"
 
   defp render_worlds(worlds) do
     worlds
