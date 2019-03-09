@@ -9,4 +9,8 @@ defmodule ElvenGardUniverse.Swarm do
   def init(_args) do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
+
+  def register(mod, init_args) do
+    DynamicSupervisor.start_child(__MODULE__, {mod, [init_args]})
+  end
 end
