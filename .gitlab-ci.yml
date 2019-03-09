@@ -34,24 +34,16 @@ prepare-base:
         --tag $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         .
     - docker push $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base
-    - |
-      docker build \
-        --pull \
-        --build-arg BUILD_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-build \
-        --file build/deps.Dockerfile \
-        --tag $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps \
-        .
-    - docker push $CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps
 
 build-release:
   stage: build
   script:
     - |
       docker build \
-        --build-arg DEPS_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps \
+        --build-arg BUILD_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-build \
         --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         --build-arg APP_NAME=elven_gard_bastion \
-        --build-arg APP_VSN=2.0.0-beta.1 \
+        --build-arg APP_VSN=2.0.0-beta.3 \
         -t $CI_REGISTRY_IMAGE:latest \
         .
     - docker push "$CI_REGISTRY_IMAGE"
@@ -63,10 +55,10 @@ build-dev:
   script:
     - |
       docker build \
-        --build-arg DEPS_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-deps \
+        --build-arg BUILD_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-build \
         --build-arg BASE_IMAGE=$CI_REGISTRY_IMAGE/ci:$CI_COMMIT_REF_SLUG-base \
         --build-arg APP_NAME=elven_gard_bastion \
-        --build-arg APP_VSN=2.0.0-beta.1 \
+        --build-arg APP_VSN=2.0.0-beta.3 \
         -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
         .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"

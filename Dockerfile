@@ -1,12 +1,19 @@
-ARG DEPS_IMAGE
+ARG BUILD_IMAGE
 ARG BASE_IMAGE
 
-FROM ${DEPS_IMAGE} AS builder
+FROM ${BUILD_IMAGE} AS builder
 
 WORKDIR /opt/app/src
 
 ARG APP_NAME
+COPY mix.* ./
+COPY config ./config
 COPY apps apps
+
+ARG MIX_ENV=prod
+ENV MIX_ENV=${MIX_ENV}
+
+RUN mix do deps.get, deps.compile
 
 RUN mix compile
 

@@ -27,16 +27,10 @@ image:
 		--tag ${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-base \
 		.
 	docker build \
-		--pull \
 		--build-arg BUILD_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-build \
-		--file build/deps.Dockerfile \
-		--tag ${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-deps \
-		.
-	docker build \
-		--build-arg DEPS_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-deps \
 		--build-arg BASE_IMAGE=${CI_REGISTRY_IMAGE}/ci:${CI_COMMIT_REF_SLUG}-base \
-		--build-arg APP_NAME=elven_gard_bastion \
-		--build-arg APP_VSN=2.0.0-beta.1 \
+		--build-arg APP_NAME=elven_gard \
+		--build-arg APP_VSN=2.0.0-beta.3 \
 		-t ${CI_REGISTRY_IMAGE}:latest \
 		.
 
@@ -53,7 +47,7 @@ release:
 
 .PHONY: doc
 doc:
-	ex_doc "ElvenGardBastion" "2.0.0-beta.1" _build/dev/lib/elven_gard_bastion --output doc/elven_gard_bastion
+	ex_doc "ElvenGardBastion" "2.0.0-beta.3" _build/dev/lib/elven_gard_bastion --output doc/elven_gard_bastion
 
 .PHONY: changelog
 changelog:

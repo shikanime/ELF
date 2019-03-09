@@ -4,7 +4,7 @@ defmodule ElvenGardCitadel.MixProject do
   def project do
     [
       app: :elven_gard_citadel,
-      version: "2.0.0-beta.2",
+      version: "2.0.0-beta.3",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",

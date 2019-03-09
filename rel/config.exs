@@ -22,7 +22,6 @@ release :elven_gard_bastion do
   set version: current_version(:elven_gard_bastion)
   set applications: [
     :runtime_tools,
-    elven_gard: :permanent
     elven_gard_bastion: :permanent
   ]
 end
@@ -31,7 +30,6 @@ release :elven_gard_citadel do
   set version: current_version(:elven_gard_citadel)
   set applications: [
     :runtime_tools,
-    elven_gard: :permanent
     elven_gard_citadel: :permanent
   ]
 end
@@ -40,7 +38,6 @@ release :elven_gard_universe do
   set version: current_version(:elven_gard_universe)
   set applications: [
     :runtime_tools,
-    elven_gard: :permanent
     elven_gard_universe: :permanent
   ]
 end
@@ -49,7 +46,17 @@ release :elven_gard_guard do
   set version: current_version(:elven_gard_guard)
   set applications: [
     :runtime_tools,
-    elven_gard: :permanent
     elven_gard_guard: :permanent
+  ]
+end
+
+release :elven_gard do
+  set version: current_version(:elven_gard_guard)
+  set applications: [
+    :runtime_tools,
+    elven_gard_bastion: :permanent,
+    elven_gard_citadel: :permanent,
+    elven_gard_guard: :permanent,
+    elven_gard_universe: :permanent
   ]
 end
