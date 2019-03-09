@@ -5,7 +5,11 @@ defmodule ElvenGardCitadel.Protocol do
 
   require Logger
 
-  alias ElvenGardGuard.Account
+  alias ElvenGardGuard.{
+    Account,
+    SessionSocket
+  }
+
   alias ElvenGardCitadel.{
 
     SessionCrypto,
@@ -42,11 +46,17 @@ defmodule ElvenGardCitadel.Protocol do
   def handle_event(:info, {:tcp, _socket, packet}, :connect, data) do
     decryted_packets = SessionCrypto.decrypt(packet)
     client_auth_packet = ClientAuthPacket.parse(decryted_packets)
-    {:next_state, :validate_credential, %{
-      data |
-      client_id: client_auth_packet.client_id,
-      session_id: client_auth_packet.session_id
-    }}
+
+    if slot_claimed?(client_auth_packet) do
+      {:next_state, :validate_credential, %{
+        data |
+        client_id: client_auth_packet.client_id,
+        session_id: client_auth_packet.session_id
+      }}
+    else
+      reply(data.conn, data.crypto, AuthentificationView, "session_unclaimed", %{})
+      {:error, :session_unclaimed}
+    end
   end
 
   @impl true
@@ -156,6 +166,17 @@ defmodule ElvenGardCitadel.Protocol do
 
   def lost_packet?(curr_packet, inc_packet) do
     curr_packet + 1 !== inc_packet
+  end
+
+  def slot_claimed?(packet) do
+    # TODO: reverse Nostale error packets
+    case SessionSocket.get_worker(packet.session_id) do
+      {:ok, _session_pid} ->
+        true
+
+      {:error, _reason} ->
+        false
+    end
   end
 
   def reply(conn, crypto, view, name, packet) do
