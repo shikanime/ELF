@@ -3,7 +3,7 @@
 ELF (Elven Lagrangian Flow) is an MMORPG game server mainly developed for Nostale.
 Using Kubernetes and Erlang as the backbone for a modern, distributed, highly conciliatory and fault-tolerant system.
 
-## Nostale secific architecture schema
+## Nostale specific architecture schema
 
 ```text
 +--------+   Login packet   +---------+  Authentification  +-------+  User credentials  +----------+
