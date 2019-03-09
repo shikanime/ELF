@@ -15,16 +15,17 @@ Using Kubernetes and Erlang as the backbone for a modern, distributed, highly co
 |        |                Create |
 |        |                       |
 |        |            +----------v----------+
-|        |            |                     |
-| Client |            | Distributed Session |
-|        |            |                     |
-|        |            +----------^----------+
-|        |                       |
-|        |      Validate session |
-|        |                       |
-|        |   Connect lobby  +----+----+  Position command  +----------+
-|        +------------------>         +-------------------->          |
-|        |   Game command   | Citadel |                    | Universe |
+|        |            |                     |  Broadcast event
+| Client |            | Distributed Session <-------------------+
+|        |            |                     |                   |
+|        |            +----------^----------+                   |
+|        |                       |                              |
+|        |      Validate session |                              |
+|        |                       |                              |
+|        |   Connect lobby  +----+----+                    +----+-----+
+|        +------------------>         |  Position command  |          |
+|        |   Game command   | Citadel +--------------------+ Universe |
 |        +------------------>         |                    |          |
 +--------+                  +---------+                    +----------+
+
 ```
