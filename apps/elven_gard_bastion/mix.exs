@@ -25,6 +25,7 @@ defmodule ElvenGardBastion.MixProject do
   defp deps do
     [
       {:elven_gard_guard, in_umbrella: true}, # TODO: Dicouple services
+      {:recase, "~> 0.4"},
       {:espec, "~> 1.6.3", only: :test},
       {:mock, "~> 0.3.0", only: :test},
       {:libcluster, "~> 3.0"},

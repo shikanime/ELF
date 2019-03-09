@@ -37,7 +37,7 @@ defmodule ElvenGardUniverse.WorldManager do
   end
 
   def start_link(init_args) do
-    GenServer.start_link(__MODULE__, [init_args])
+    GenServer.start_link(__MODULE__, init_args)
   end
 
   @impl true
@@ -51,7 +51,11 @@ defmodule ElvenGardUniverse.WorldManager do
   end
 
   @impl true
-  def handle_call(:get_status, _from, state) do
-    {:reply, state, state}
+  def handle_call(:get_statuses, _from, state) do
+    # TODO: calculate dynamically :population_number
+    res = state
+    |> Map.put(:population_number, 0)
+    |> Map.put(:population_limit, 100)
+    {:reply, res, state}
   end
 end

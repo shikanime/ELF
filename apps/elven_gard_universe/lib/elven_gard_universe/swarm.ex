@@ -11,6 +11,6 @@ defmodule ElvenGardUniverse.Swarm do
   end
 
   def register(mod, init_args) do
-    DynamicSupervisor.start_child(__MODULE__, {mod, [init_args]})
+    DynamicSupervisor.start_child(__MODULE__, {mod, init_args})
   end
 end

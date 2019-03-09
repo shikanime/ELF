@@ -42,7 +42,7 @@ defmodule ElvenGardBastion.Protocol do
     decrypted_packet = SignInCrypto.decrypt(packet)
     sign_in_packet = SignInPacket.parse(decrypted_packet)
 
-    case handle_packet(sign_in_packet) do
+    case handle_packet(:connect, sign_in_packet) do
       {:ok, params} ->
         reply(data.conn, data.crypto, AuthentificationView, :sign_in, params)
         {:stop, :normal, data}
@@ -53,7 +53,7 @@ defmodule ElvenGardBastion.Protocol do
     end
   end
 
-  def handle_packet(packet) do
+  def handle_packet(:connect, packet) do
     with :ok              <- validate_client(packet),
          {:ok, user}      <- authenticate_user(packet),
          {:ok, client_id} <- claim_slot(),
@@ -89,6 +89,9 @@ defmodule ElvenGardBastion.Protocol do
     if expected_hash == packet.client_hash do
       :ok
     else
+      Logger.warn(fn ->
+        "Client hash: #{packet.client_hash} is different from expected hash: ${expected_hash}"
+      end)
       {:error, :corrupted_client}
     end
   end
@@ -118,20 +121,18 @@ defmodule ElvenGardBastion.Protocol do
   end
 
   def list_worlds() do
-    res = [
-      %{
-        # TODO: Remove static server IP
-        ip: System.get_env("NODE_IP"),
-        port: System.get_env("ELVEN_GARD_CITADEL"),
-        population_number: 0,
-        # TODO: move to env
-        population_limit: 200,
-        world_id: 1,
-        channel_id: 1,
-        name: "Mainland"
-      }
-    ]
-    {:ok, res}
+    worlds = Swarm.multi_call(:universe_worlds, :get_statuses)
+    |> Enum.map(&(format_world(&1)))
+    {:ok, worlds}
+  end
+
+  defp format_world(world) do
+    Map.new(world, fn
+      {:id, id} -> {:world_id, id}
+      x -> x
+    end)
+    # TODO: remove this channel placeholder
+    |> Map.put(:channel_id, 0)
   end
 
   def reply(conn, crypto, view, name, packet) do
