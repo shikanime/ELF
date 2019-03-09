@@ -62,7 +62,7 @@ defmodule ElvenGardBastion.AuthentificationView do
     #{render_world_population(worlds_status.population_number, worlds_status.population_limit)}:\
     #{worlds_status.world_id}.\
     #{worlds_status.channel_id}.\
-    #{worlds_status.name}\
+    #{Recase.to_pascal(worlds_status.name)}\
     """
   end
 
