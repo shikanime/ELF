@@ -1,4 +1,4 @@
-defmodule ElvenGardBastion.SignInPacket do
+defmodule ElvenGardLib.SignInPacket do
   @moduledoc """
   First SignInRequest packet.reply by the client
   """

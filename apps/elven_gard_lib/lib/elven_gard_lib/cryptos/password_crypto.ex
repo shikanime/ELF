@@ -1,4 +1,4 @@
-defmodule ElvenGardBastion.PasswordCrypto do
+defmodule ElvenGardLib.PasswordCrypto do
   use Bitwise, only_operators: true
 
   @spec decrypt(binary) :: String.t()

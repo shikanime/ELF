@@ -13,7 +13,7 @@ defmodule ElvenGardBastion.Protocol do
     SessionSocket
   }
 
-  alias ElvenGardBastion.{
+  alias ElvenGardLib.{
     SignInCrypto,
     SignInPacket,
     AuthentificationView

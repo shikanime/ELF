@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.PasswordPacket do
+defmodule ElvenGardLib.PasswordPacket do
   @moduledoc """
   First PasswordRequest packet.reply by the client
   """

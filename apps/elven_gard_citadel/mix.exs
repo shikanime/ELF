@@ -24,6 +24,7 @@ defmodule ElvenGardCitadel.MixProject do
 
   defp deps do
     [
+      {:elven_gard_lib, in_umbrella: true},
       {:elven_gard_guard, in_umbrella: true}, # TODO: Dicouple services
       {:espec, "~> 1.6.3", only: :test},
       {:mock, "~> 0.3.0", only: :test},

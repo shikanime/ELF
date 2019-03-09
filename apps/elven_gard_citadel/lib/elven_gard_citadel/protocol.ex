@@ -10,8 +10,7 @@ defmodule ElvenGardCitadel.Protocol do
     SessionSocket
   }
 
-  alias ElvenGardCitadel.{
-
+  alias ElvenGardLib.{
     SessionCrypto,
     WorldCrypto,
     ClientAuthPacket,

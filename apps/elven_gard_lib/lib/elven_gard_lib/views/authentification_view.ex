@@ -1,4 +1,4 @@
-defmodule ElvenGardBastion.AuthentificationView do
+defmodule ElvenGardLib.AuthentificationView do
   def render(:sign_in, params) do
     """
     NsTeST \

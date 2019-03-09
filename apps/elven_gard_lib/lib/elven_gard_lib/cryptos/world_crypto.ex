@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.WorldCrypto do
+defmodule ElvenGardLib.WorldCrypto do
   @moduledoc """
   Cryptography for a Nostale sign_in server.
   """

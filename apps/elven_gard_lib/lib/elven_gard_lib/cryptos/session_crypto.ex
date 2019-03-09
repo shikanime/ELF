@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.SessionCrypto do
+defmodule ElvenGardLib.SessionCrypto do
   use Bitwise, only_operators: true
 
   @doc """

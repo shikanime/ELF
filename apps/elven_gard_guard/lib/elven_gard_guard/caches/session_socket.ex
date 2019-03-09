@@ -3,13 +3,13 @@ defmodule ElvenGardGuard.SessionSocket do
 
   require Logger
 
-  def start_worker(id) do
+  def start_worker(id, _attrs \\ %{}) do
     with {:ok, pid} <-
            Swarm.register_name(
              id,
              ElvenGardGuard.Swarm,
              :register,
-             [ElvenGardGuard.SessionSocket]
+             [__MODULE__]
            ),
          :ok <- Swarm.join(:bastion_sessions, pid) do
       :ok

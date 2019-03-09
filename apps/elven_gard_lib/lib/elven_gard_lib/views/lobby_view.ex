@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.LobbyView do
+defmodule ElvenGardLib.LobbyView do
   def render("list_heros", params) do
     [
       "clist_start 0",

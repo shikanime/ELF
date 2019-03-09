@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.HeroView do
+defmodule ElvenGardLib.HeroView do
   @hero_genders %{male: 0, female: 1}
   @hero_classes %{neutre: 1}
   @hero_hair_styles %{a: 0, b: 1}

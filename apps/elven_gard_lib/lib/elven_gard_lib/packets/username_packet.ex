@@ -1,4 +1,4 @@
-defmodule ElvenGardCitadel.UsernamePacket do
+defmodule ElvenGardLib.UsernamePacket do
   @moduledoc """
   First UsernameRequest packet.reply by the client
   """
