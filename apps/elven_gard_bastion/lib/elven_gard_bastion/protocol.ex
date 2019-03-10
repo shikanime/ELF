@@ -44,11 +44,11 @@ defmodule ElvenGardBastion.Protocol do
 
     case connect_user(sign_in_packet) do
       {:ok, params} ->
-        reply(data.conn, data.crypto, AuthentificationView, :sign_in, params)
+        reply(data.conn, data.crypto, AuthentificationView, "sign_in", params)
         {:stop, :normal, data}
 
       {:error, reason} ->
-        reply(data.conn, data.crypto, AuthentificationView, reason, %{})
+        reply(data.conn, data.crypto, AuthentificationView, reason |> to_string(), %{})
         {:stop, reason}
     end
   end

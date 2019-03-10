@@ -5,7 +5,7 @@ defmodule ElvenGardUniverse.Society.Group do
   schema "groups" do
     field :name
 
-    has_many :heros, ElvenGardUniverse.Entity.Hero
+    has_many :characters, ElvenGardUniverse.Entity.Character
 
     timestamps()
   end

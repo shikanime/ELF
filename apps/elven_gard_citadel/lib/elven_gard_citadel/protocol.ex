@@ -16,9 +16,9 @@ defmodule ElvenGardCitadel.Protocol do
     ClientAuthPacket,
     UsernamePacket,
     PasswordPacket,
-    LobbyView,
+    CharacterSelectView,
     AuthentificationView,
-    HeroView
+    CharacterView
   }
 
   @impl true
@@ -80,7 +80,7 @@ defmodule ElvenGardCitadel.Protocol do
     case Account.authenticate_user(username_packet.user_name, password_packet.user_password_hash) do
       {:ok, _user} ->
         params = %{
-          heros: [
+          Characters: [
             %{
               name: "PlayerZ",
               slot: 1,
@@ -90,13 +90,13 @@ defmodule ElvenGardCitadel.Protocol do
               class: 0,
               level: 30,
               job_level: 10,
-              hero_level: 99,
+              Character_level: 99,
               equipments: "-1.-1.-1.-1.-1.-1.-1.-1",
               pets: "-1"
             }
           ]
         }
-        reply(data.conn, data.crypto, LobbyView, "list_heros", params)
+        reply(data.conn, data.crypto, CharacterSelectView, "list_Characters", params)
         {:next_state, :ignore_stash, %{data | packet_id: password_packet_id}}
 
       {:error, reason} ->
@@ -113,25 +113,25 @@ defmodule ElvenGardCitadel.Protocol do
       "Unimplemented packet: #{inspect(decryted_packet)}"
     end)
 
-    {:next_state, :select_hero, data}
+    {:next_state, :select_Character, data}
   end
 
   @impl true
-  def handle_event(:info, {:tcp, _socket, packet}, :select_hero, data) do
+  def handle_event(:info, {:tcp, _socket, packet}, :select_Character, data) do
     _decryted_packet = WorldCrypto.decrypt(packet, data.client_id)
 
     # TODO: replace placeholder
-    reply(data.conn, data.crypto, HeroView, "sync_hero", %{
-      hero_id: 1,
-      hero_name: "Player",
-      hero_class: :neutre,
-      hero_gender: :female,
-      hero_hair_style: :b,
-      hero_hair_color: :nutmeg,
-      hero_sp_upgrade?: true,
-      hero_arena_winner?: true,
-      hero_invisible?: false,
-      hero_morph: 0,
+    reply(data.conn, data.crypto, CharacterView, "sync_Character", %{
+      Character_id: 1,
+      Character_name: "Player",
+      Character_class: :neutre,
+      Character_gender: :female,
+      Character_hair_style: :b,
+      Character_hair_color: :nutmeg,
+      Character_sp_upgrade?: true,
+      Character_arena_winner?: true,
+      Character_invisible?: false,
+      Character_morph: 0,
       family_id: "-1",
       family_name: "-",
       family_level: 0,
@@ -141,10 +141,10 @@ defmodule ElvenGardCitadel.Protocol do
       compliment: 0,
     })
 
-    reply(data.conn, data.crypto, HeroView, "move_hero", %{
-      hero_id: 1,
-      hero_position_x: :rand.uniform(6) + 76,
-      hero_position_y: :rand.uniform(5) + 113,
+    reply(data.conn, data.crypto, CharacterView, "move_Character", %{
+      Character_id: 1,
+      Character_position_x: :rand.uniform(6) + 76,
+      Character_position_y: :rand.uniform(5) + 113,
       map_name: "Nosville",
       map_music_id: 0
     })

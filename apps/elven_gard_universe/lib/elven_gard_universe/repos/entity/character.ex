@@ -1,8 +1,8 @@
-defmodule ElvenGardUniverse.Entity.Hero do
+defmodule ElvenGardUniverse.Entity.Character do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "heros" do
+  schema "Characters" do
     field :name
     field :position_x, :integer
     field :position_y, :integer
@@ -26,9 +26,38 @@ defmodule ElvenGardUniverse.Entity.Hero do
   end
 
   @doc false
-  def changeset(hero, attrs) do
-    hero
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+  def changeset(character, attrs) do
+    character
+    |> cast(attrs, [
+      :name,
+      :position_x,
+      :position_y,
+      :gender,
+      :hair_style,
+      :hair_color,
+      :authority,
+      :dignity,
+      :compliment,
+      :morph,
+      :invisible,
+      :sp_upgrade,
+      :arena_winner
+    ])
+    |> validate_required([
+      :name,
+      :name,
+      :position_x,
+      :position_y,
+      :gender,
+      :hair_style,
+      :hair_color,
+      :authority,
+      :dignity,
+      :compliment,
+      :morph,
+      :invisible,
+      :sp_upgrade,
+      :arena_winner
+    ])
   end
 end

@@ -7,7 +7,7 @@ defmodule ElvenGardUniverse.Env.Channel do
 
     belongs_to :world, ElvenGardUniverse.Env.World
     has_many :maps, ElvenGardUniverse.Env.Map
-    has_many :users, ElvenGardUniverse.Entity.Hero
+    has_many :characters, ElvenGardUniverse.Entity.Character
 
     timestamps()
   end

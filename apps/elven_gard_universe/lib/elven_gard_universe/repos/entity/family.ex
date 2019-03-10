@@ -6,7 +6,7 @@ defmodule ElvenGardUniverse.Entity.Family do
     field :name
     field :level
 
-    belongs_to :hero, ElvenGardUniverse.Entity.Hero
+    belongs_to :Character, ElvenGardUniverse.Entity.Character
 
     timestamps()
   end
