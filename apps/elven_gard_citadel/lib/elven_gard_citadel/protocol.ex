@@ -54,7 +54,7 @@ defmodule ElvenGardCitadel.Protocol do
       }}
     else
       reply(data.conn, data.crypto, AuthentificationView, "session_unclaimed", %{})
-      {:error, :session_unclaimed}
+      {:stop, :session_unclaimed, data}
     end
   end
 
